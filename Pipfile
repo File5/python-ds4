@@ -4,10 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest = "*"
 
 [packages]
 numpy = "*"
 pygame = "==2.0.0.dev10"
+keyboard = "*"
+pynput = "*"
 
 [requires]
 python_version = "3.7"

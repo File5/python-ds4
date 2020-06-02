@@ -16,6 +16,41 @@ import os
 import pprint
 import pygame
 import keyboard
+import numpy as np
+
+
+def get_angle(x, y):
+    v0 = np.array([1, 0])
+    v = np.array([x, y])
+    dot = np.dot(v, v0)
+    det = np.linalg.det([v, v0])
+    angle = np.arctan2(det, dot)
+    # round to nearest k * np.pi / 4
+    return int(round(angle * 4 / np.pi))
+
+
+def get_dist(x, y):
+    v = np.array([x, y])
+    return 1 if np.all(np.abs(v) < 0.5) else 2
+
+
+def get_axis_item(x, y, data):
+    angle = get_angle(x, y)
+    dist = get_dist(x, y)
+
+    lookup = [
+        [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
+        [(1, 4), (0, 4), (0, 2), (0, 0), (1, 0), (2, 0), (2, 2), (2, 4)], # dist = 2
+    ]
+    row, col = lookup[dist - 1][angle]
+    return data[row][col]
+
+    # col = np.sign(abs(angle) - 2) * dist
+    # if x % 2 == 1:
+    #     row = 1 - np.sign(angle)
+    # else:
+    #     angle * dist
+
 
 class PS4Controller(object):
     """Class representing the PS4 controller. Pretty straightforward functionality."""
@@ -37,16 +72,51 @@ class PS4Controller(object):
 
         self.axis_thr = 0.008
 
-        self.last_x = 0
-        self.last_y = 0
+        self.last = {
+            "left": [0, 0],
+            "right": [0, 0]
+        }
+        self.axis = {
+            "left": [0, 0],
+            "right": [0, 0],
+        }
 
-        self.axis = [0, 0]
+        self.axis_to_internal = {0: 0, 1: 1, 2: 0, 5: 1}
+        self.axis_to_left_right = {
+            0: "left",
+            1: "left",
+            2: "right",
+            5: "right"
+        }
+        self.left_right_to_axis = {
+            "left": [0, 1],
+            "right": [2, 5]
+        }
 
-        self.keyboard_layout = [
-            "qwert",
-            "asdfg",
-            "zxcvb",
+        self.lookup = lookup = [
+            [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
+            [(1, 4), (0, 4), (0, 2), (0, 0), (1, 0), (2, 0), (2, 2), (2, 4)], # dist = 2
         ]
+        self.keyboard_layout = {
+            "left": [
+                "qwert",
+                "asdfg",
+                "zxcvb",
+            ],
+            "right": [
+                "yuiop",
+                "hjkl;",
+                "nm,./",
+            ]
+        }
+
+    def get_key(self, left_right, x, y):
+        angle = get_angle(x, y)
+        dist = get_dist(x, y)
+
+        row, col = self.lookup[dist - 1][angle]
+        data = self.keyboard_layout[left_right]
+        return data[row][col]
 
     def listen(self):
         """Listen for events to happen"""
@@ -67,37 +137,42 @@ class PS4Controller(object):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.JOYAXISMOTION:
-                    if event.axis in (0, 1):
-                        self.axis[event.axis] = event.value if abs(event.value) > self.axis_thr else 0
+                    if event.axis in self.axis_to_left_right:
+                        left_right = self.axis_to_left_right[event.axis]
 
-                    if abs(self.axis[0]) > abs(self.last_x):
-                        self.last_x = self.axis[0]
-                    if abs(self.axis[1]) > abs(self.last_y):
-                        self.last_y = self.axis[1]
+                        self.axis[left_right][self.axis_to_internal[event.axis]] = (
+                            event.value if abs(event.value) > self.axis_thr else 0
+                        )
 
-                    if abs(self.axis[0]) == 0 and abs(self.axis[1]) == 0:
-                        y = int( (self.last_y + 1) / 2 * (len(self.keyboard_layout) - 1e-5) )
-                        x = int( (self.last_x + 1) / 2 * (len(self.keyboard_layout[0]) - 1e-5) )
-                        #print(self.last_y, self.last_x)
-                        #print(y, x)
-                        #keyboard.write(self.keyboard_layout[y][x])
-                        os.system('clear')
-                        print(self.last_y, self.last_x)
-                        self.last_x = 0
-                        self.last_y = 0
+                        for index in self.left_right_to_axis[left_right]:
+                            iindex = self.axis_to_internal[index]
+                            value = self.axis[left_right][iindex]
+                            if abs(value) > abs(self.last[left_right][iindex]):
+                                self.last[left_right][iindex] = value
+
+                        if all((abs(i) == 0 for i in self.axis[left_right])):
+                            x, y = self.last[left_right]
+                            key = self.get_key(left_right, x, y)
+                            #print(self.last_y, self.last_x)
+                            #print(y, x)
+                            if self.controller.get_button(6) or self.controller.get_button(7):
+                                key = "shift+" + key
+                            keyboard.send(key)
+                            os.system('clear')
+                            print(key)
+                            print(self.last[left_right])
+                            self.last[left_right] = [0, 0]
 
                 elif event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 4:
-                        pass#self.mouse.press(Button.left)
+                        keyboard.press('space')
                     if event.button == 5:
-                        print('press')
-                        #keyboard.press('backspace')
+                        keyboard.press('backspace')
                 elif event.type == pygame.JOYBUTTONUP:
                     if event.button == 4:
-                        pass#self.mouse.release(Button.left)
+                        keyboard.release('space')
                     if event.button == 5:
-                        print('release')
-                        #keyboard.release('backspace')
+                        keyboard.release('backspace')
                 elif event.type == pygame.JOYHATMOTION:
                     pass
                     # if event.hat == 0:
