@@ -31,7 +31,7 @@ def get_angle(x, y):
 
 def get_dist(x, y):
     v = np.array([x, y])
-    return 2 if np.linalg.norm(v) > 0.9 else 1
+    return 2 if np.linalg.norm(v, ord=4) > 0.9 else 1
     return 2 if np.all(np.abs(v) > 0.6) else 1
 
 
