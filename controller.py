@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # This file presents an interface for interacting with the Playstation 4 Controller
@@ -16,91 +16,96 @@ import os
 import pprint
 import pygame
 
-class PS4Controller(object):
-    """Class representing the PS4 controller. Pretty straightforward functionality."""
 
-    controller = None
-    axis_data = None
-    button_data = None
-    hat_data = None
+def merge_event_handlers(*args):
+    result = {}
+    events = set().union(*args)
+    for event in events:
+        result[event] = []
+
+        for arg in args:
+            for handler_list in arg.get(event, []):
+                if not isinstance(handler_list, list):
+                    handler_list = list(handler_list)
+                result[event] += handler_list
+    return result
+
+
+class InterruptListen(Exception):
+    pass
+
+
+class Controller:
+    """Class representing the controller"""
+
+    possible_events = (
+        pygame.JOYAXISMOTION, pygame.JOYBALLMOTION, pygame.JOYBUTTONDOWN,
+        pygame.JOYBUTTONUP, pygame.JOYHATMOTION
+    )
+
+    def __init__(self, event_handlers=None, init_controller=False):
+        """
+        Initialize the controller
+
+        :param event_handlers: map pygame.JOY* event to a list of callables(event)
+        """
+
+        if event_handlers is None:
+            event_handlers = {}
+        self.event_handlers = event_handlers
+
+        if init_controller:
+            self.init_controller()
 
     def init(self):
-        """Initialize the joystick components"""
-
         pygame.init()
         pygame.joystick.init()
+
+    def init_controller(self):
+        self.init()
         self.controller = pygame.joystick.Joystick(0)
         self.controller.init()
 
+    @staticmethod
+    def _no_action_event_handler(event):
+        pass
+
     def listen(self):
-        """Listen for events to happen"""
+        """
+        Start infinite loop over pygame.event.get()
 
-        if not self.axis_data:
-            self.axis_data = {}
+        Handler can interrupt this loop by throwing InterruptListen exception.
+        """
 
-        if not self.button_data:
-            self.button_data = {}
-            for i in range(self.controller.get_numbuttons()):
-                self.button_data[i] = False
+        try:
+            while True:
+                for event in pygame.event.get():
+                    self.process_event(event)
+        except InterruptListen:
+            pass
 
-        if not self.hat_data:
-            self.hat_data = {}
-            for i in range(self.controller.get_numhats()):
-                self.hat_data[i] = (0, 0)
+    def process_event(self, event):
+        """
+        Process given pygame event.
 
-        # while True:
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.JOYAXISMOTION:
-        #             self.axis_data[event.axis] = round(event.value,2)
-        #         elif event.type == pygame.JOYBUTTONDOWN:
-        #             self.button_data[event.button] = True
-        #         elif event.type == pygame.JOYBUTTONUP:
-        #             self.button_data[event.button] = False
-        #         elif event.type == pygame.JOYHATMOTION:
-        #             self.hat_data[event.hat] = event.value
-
-        def cprint(*args, **kwargs):
-            os.system('clear')
-            print(*args, **kwargs)
-
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.JOYAXISMOTION:
-                    if event.axis == 0:
-                        if event.value > 0:
-                            cprint("right {}".format(event.value))
-                        if event.value < 0:
-                            cprint("left {}".format(event.value))
-                    if event.axis == 1:
-                        if event.value > 0:
-                            cprint("down {}".format(event.value))
-                        if event.value < 0:
-                            cprint("up {}".format(event.value))
-                elif event.type == pygame.JOYBUTTONDOWN:
-                    cprint("pressed {} button".format(event.button))
-                elif event.type == pygame.JOYBUTTONUP:
-                    cprint("button up")
-                elif event.type == pygame.JOYHATMOTION:
-                    if event.hat == 0:
-                        if event.value == (1, 0):
-                            cprint("hat right")
-                        if event.value == (-1, 0):
-                            cprint("hat left")
-                        if event.value == (0, 1):
-                            cprint("hat up")
-                        if event.value == (0, -1):
-                            cprint("hat down")
-
-                # Insert your code on what you would like to happen for each event here!
-                # In the current setup, I have the state simply printing out to the screen.
-
-                #os.system('clear')
-                #pprint.pprint(self.button_data)
-                #pprint.pprint(self.axis_data)
-                #pprint.pprint(self.hat_data)
+        This function can be used for external pygame.event.get() loop.
+        """
+        if event.type in self.possible_events:
+            handlers = self.event_handlers.get(
+                event.type, [self._no_action_event_handler]
+            )
+            for handler in handlers:
+                handler(event)
 
 
 if __name__ == "__main__":
-    ps4 = PS4Controller()
-    ps4.init()
-    ps4.listen()
+    def axis_motion_handler(event):
+        os.system("clear")
+        print('Axis {}: {}'.format(event.axis, event.value))
+
+    c = Controller({
+        pygame.JOYBUTTONDOWN: [lambda e: print('Button {} down event'.format(e.button))],
+        pygame.JOYHATMOTION: [lambda e: print('Hat {}: {}'.format(e.hat, e.value))],
+        pygame.JOYAXISMOTION: [axis_motion_handler],
+    }, init_controller=True)
+    c.listen()
