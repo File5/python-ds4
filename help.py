@@ -122,8 +122,66 @@ class AsciiKeyboard:
         return '\n'.join(result_rows)
 
 
+ASCII_DUALSHOCK = """\
+             ,---,                                           ,---,
+             |{L2U:^3}|                                           |{R2U:^3}|
+             |{L2D:^3}|                                           |{R2D:^3}|
+             '---'                                           '---'
+           ,-----,                                           ,-----,
+           |{L1:^5}|{LONGSH:^12}                   {LONGOP:^12}|{R1:^5}|
+        ,--'-----'--------,-------------------------,--------'-----'--,
+       /    ,---,     ,--,|                         |,--,     ,---,    \\
+      /     |{DU:^3}|     |{SH:^2}||{TU:^25}||{OP:^2}|    ({RT:^5})    \\
+     / ,---. \ / .---,'--'|{TD:^25}|'--',---,'---',---, \\
+    |  |{DL:^3} >   < {DR:^3}|    |                         |   ({RS:^5})   ({RC:^5}) |
+    |  '---` / \ `---'    '-------------------------'    '---',---,'---'  |
+    |       |{DD:^3}|       .-\"""-.      ,---,      .-\"""-.      ({RX:^5})      |
+    |       '---'      /{LAU:^7}\    ({PS:^5})    /{RAU:^7}\      '---'       |
+   /                  ({LAM:^9})    '---'    ({RAM:^9})                  \\
+  /                  ,-\{LAD:^7}/---------------\{RAD:^7}/-,                  \\
+ /                  /   '-...-'                 '-...-'   \                  \\
+|                  /                                       \                  |
+|                 /{LP:^17}       {RP:^17}\                 |
+ \               |                                           |               /
+  \             /                                             \             /
+   '---_____---'                                               '---_____---'\
+"""
+DEFAULT_FORMAT_KWARGS = dict(L2U='', L2D='', R2U='', R2D='', L1='', R1='', DU='', DL='', DR='', DD='', SH='', OP='',
+    LONGSH='', LONGOP='',
+    RT='', RS='', RC='', RX='', TU='', TD='', LAU='', LAM='', LAD='', RAU='', RAM='', RAD='', PS='', LP='| |', RP='| |')
+
+
+class AsciiDualShock:
+    def __init__(self):
+        self.highlight = {}
+        self.text = {}
+
+    def _format(self, **kwargs):
+        format_kwargs = {**DEFAULT_FORMAT_KWARGS, **kwargs}
+        return ASCII_DUALSHOCK.format(**format_kwargs)
+
+    def __str__(self):
+        return self._format(**self.text)
+
+
 if __name__ == '__main__':
     keyboard = AsciiKeyboard()
     keyboard.highlight['d'] = ('<', '>')
     keyboard.highlight['k'] = ('<', '>')
     print(keyboard)
+
+    ds4 = AsciiDualShock()
+    ds4.text = dict(
+        L2U='L2U', L2D='L2D', R2U='R2U', R2D='R2D', L1='L1', R1='R1',
+        DU='DU', DL='DL', DR='DR', DD='DD',
+        SH='SH', OP='OP',
+        LONGSH='LONGSH', LONGOP='LONGOP',
+        RT='RT', RS='RS', RC='RC', RX='RX',
+        TU='TU', TD='TD',
+        LAU='LAU', LAM='LAM', LAD='LAD',
+        RAU='RAU', RAM='RAM', RAD='RAD',
+        PS='PS',
+        LP='|LP |', RP='|RP |'
+    )
+    #ds4.text = {}
+    print(ds4)
