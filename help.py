@@ -24,7 +24,7 @@ class AsciiKeyboard:
     PADDING = 1
 
     def __init__(self):
-        self.highlight = []
+        self.highlight = {}
         self._keys = [
             ['§'] + [str(i) for i in range(1, 10)] + ['0', '-', '=', self.BACKSPACE_KEY],
             [self.TAB_KEY, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', self.RETURN_UPPER_KEY],
@@ -92,7 +92,12 @@ class AsciiKeyboard:
                 else:
                     width = 1
                     text = key
-                width += 2 * self.PADDING
+
+                if key in self.highlight:
+                    hl_left, hl_right = self.highlight[key]
+                    text = hl_left + text + hl_right
+                else:
+                    width += 2 * self.PADDING
 
                 result_row += '|' + ('{:^%d}' % width).format(text)
             result_row += '|'
@@ -108,4 +113,7 @@ class AsciiKeyboard:
 
 
 if __name__ == '__main__':
-    print(AsciiKeyboard())
+    keyboard = AsciiKeyboard()
+    keyboard.highlight['d'] = ('<', '>')
+    keyboard.highlight['k'] = ('<', '>')
+    print(keyboard)
