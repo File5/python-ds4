@@ -88,6 +88,7 @@ class KeyboardControllerEventHandler(object):
             "right": "",
         }
         self.on_current_key_changed = None
+        self.on_shift_changed = None
 
     @staticmethod
     def _get_angle(x, y):
@@ -122,6 +123,8 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button in self.JOY_BUTTONS_SHIFT:
             self.shift = True
+            if self.on_shift_changed is not None:
+                self.on_shift_changed(True)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
@@ -144,6 +147,8 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button in self.JOY_BUTTONS_SHIFT:
             self.shift = False
+            if self.on_shift_changed is not None:
+                self.on_shift_changed(False)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')

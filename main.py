@@ -56,6 +56,11 @@ def main():
         print('\033[12F')
         print(ascii_keyboard)
     keyboard.on_current_key_changed = on_current_key_changed
+    def on_shift_changed(shift):
+        ascii_keyboard.shift = shift
+        print('\033[12F')
+        print(ascii_keyboard)
+    keyboard.on_shift_changed = on_shift_changed
     print(ascii_keyboard)
 
     clock = pygame.time.Clock()

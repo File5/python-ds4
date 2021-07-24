@@ -25,6 +25,7 @@ class AsciiKeyboard:
 
     def __init__(self):
         self.highlight = {}
+        self.shift = False
         self._keys = [
             ['§'] + [str(i) for i in range(1, 10)] + ['0', '-', '=', self.BACKSPACE_KEY],
             [self.TAB_KEY, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', self.RETURN_UPPER_KEY],
@@ -91,7 +92,10 @@ class AsciiKeyboard:
                     text = key.text
                 else:
                     width = 1
-                    text = key
+                    if key.isalpha() and self.shift:
+                        text = key.upper()
+                    else:
+                        text = key
 
                 if key in self.highlight:
                     hl_left, hl_right = self.highlight[key]
