@@ -33,6 +33,9 @@ class AsciiKeyboard:
             [self.LSHIFT_KEY, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', self.RSHIFT_KEY],
             [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
         ]
+        self._shift = {
+            '[': '{', ']': '}', ';': ':', '\'': '"', ',': '<', '.': '>', '/': '?'
+        }
 
     def __str__(self):
         result_rows = []
@@ -92,8 +95,11 @@ class AsciiKeyboard:
                     text = key.text
                 else:
                     width = 1
-                    if key.isalpha() and self.shift:
-                        text = key.upper()
+                    if self.shift and (key.isalpha() or key in self._shift):
+                        if key in self._shift:
+                            text = self._shift[key]
+                        else:
+                            text = key.upper()
                     else:
                         text = key
 
