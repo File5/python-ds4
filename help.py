@@ -2,18 +2,18 @@ import re
 
 
 class SpecialKey:
-    def __init__(self, text, name, width, upper_border=True):
+    def __init__(self, text, name, width, custom_upper_border=None):
         self.text = text
         self.name = name
         self.width = width
-        self.upper_border = upper_border
+        self.custom_upper_border = custom_upper_border
 
 
 class AsciiKeyboard:
     BACKSPACE_KEY = SpecialKey('<-', '<Backspace>', 5)
     TAB_KEY = SpecialKey('->|', '<Tab>', 3)
     RETURN_UPPER_KEY = SpecialKey('', '< >', 3)
-    RETURN_KEY = SpecialKey('⏎', '<Return>', 6, upper_border=False)
+    RETURN_KEY = SpecialKey('⏎', '<Return>', 6, custom_upper_border='--      ')
     CAPS_LOCK_KEY = SpecialKey('Caps', '<CapsLock>', 4)
     LSHIFT_KEY = SpecialKey('^    ', '<Shift>', 5)
     RSHIFT_KEY = SpecialKey('        ^', '<Shift>', 9)
@@ -50,11 +50,10 @@ class AsciiKeyboard:
                     width = 1
                 width += 2 * self.PADDING
 
-                delim = '-'
-                if isinstance(key, SpecialKey) and not key.upper_border:
-                    delim = ' '
-
-                result_row += ',' + delim * width
+                if isinstance(key, SpecialKey) and key.custom_upper_border is not None:
+                    result_row += ',' + key.custom_upper_border
+                else:
+                    result_row += ',' + '-' * width
 
             if first:
                 result_row += ','
