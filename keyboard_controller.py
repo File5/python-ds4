@@ -83,6 +83,11 @@ class KeyboardControllerEventHandler(object):
         self.shift = False
 
         self.keyboard_layout = self.DEFAULT_KEYBOARD_LAYOUT
+        self.current_key = {
+            "left": "",
+            "right": "",
+        }
+        self.on_current_key_changed = None
 
     @staticmethod
     def _get_angle(x, y):
@@ -166,10 +171,14 @@ class KeyboardControllerEventHandler(object):
                 if abs(value) > abs(self.last[left_right][iindex]):
                     self.last[left_right][iindex] = value
 
-            if all((abs(i) == 0 for i in self.axis[left_right])):
-                x, y = self.last[left_right]
-                key = self._get_key(left_right, x, y)
+            x, y = self.last[left_right]
+            key = self._get_key(left_right, x, y)
+            if self.current_key[left_right] != key:
+                self.current_key[left_right] = key
+                if self.on_current_key_changed:
+                    self.on_current_key_changed(self.current_key)
 
+            if all((abs(i) == 0 for i in self.axis[left_right])):
                 if self.shift:
                     key = "shift+" + key
                 keyboard.send(key)
@@ -177,6 +186,9 @@ class KeyboardControllerEventHandler(object):
                 # print(key)
                 # print(self.last[left_right])
                 self.last[left_right] = [0, 0]
+                self.current_key[left_right] = ""
+                if self.on_current_key_changed:
+                    self.on_current_key_changed(self.current_key)
 
     def _hat_move_event(self, event):
         pass
