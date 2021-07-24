@@ -1,6 +1,3 @@
-import re
-
-
 class SpecialKey:
     def __init__(self, text, name, width, custom_upper_border=None):
         self.text = text
@@ -39,8 +36,9 @@ class AsciiKeyboard:
     def __str__(self):
         result_rows = []
 
-        def upper_part(row, first=False, last=False):
+        def upper_part(row, prev_delim_indexes=None, first=False, last=False):
             result_row = ''
+            delim_indexes = set()
 
             # upper part of the keys row
             for key in row:
@@ -50,6 +48,7 @@ class AsciiKeyboard:
                     width = 1
                 width += 2 * self.PADDING
 
+                delim_indexes.add(len(result_row))
                 if isinstance(key, SpecialKey) and key.custom_upper_border is not None:
                     result_row += ',' + key.custom_upper_border
                 else:
@@ -63,12 +62,10 @@ class AsciiKeyboard:
                 result_row += '|'
             
             # take into account previous upper part
-            if len(result_rows) >= 2:
-                prev_upper_row = result_rows[-2]
-                delim_indexes = {m.start() for m in re.finditer(',', prev_upper_row)}
+            if prev_delim_indexes is not None:
                 updated_result_row = ''
                 for i, c in enumerate(result_row[:-1]):
-                    if i in delim_indexes:
+                    if i in prev_delim_indexes:
                         updated_result_row += '\''
                     else:
                         updated_result_row += c
@@ -81,6 +78,8 @@ class AsciiKeyboard:
                 result_row = updated_result_row
 
             result_rows.append(result_row)
+            # return our delim_indexes
+            return delim_indexes
 
         def lower_part(row):
             result_row = ''
@@ -99,11 +98,12 @@ class AsciiKeyboard:
             result_row += '|'
             result_rows.append(result_row)
         
+        delim_indexes = set()
         for i, row in enumerate(self._keys):
-            upper_part(row, first=i == 0)
+            delim_indexes = upper_part(row, delim_indexes, first=i == 0)
             lower_part(row)
 
-        upper_part(row, last=True)
+        delim_indexes = upper_part(row, delim_indexes, last=True)
         return '\n'.join(result_rows)
 
 
