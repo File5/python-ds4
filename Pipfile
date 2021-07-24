@@ -8,9 +8,9 @@ pytest = "*"
 
 [packages]
 numpy = "*"
-pygame = "==2.0.0.dev10"
+pygame = ">=2.0.0"
 keyboard = "*"
 pynput = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
