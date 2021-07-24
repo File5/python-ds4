@@ -33,6 +33,9 @@ class KeyboardControllerEventHandler(object):
     JOY_BUTTON_BACKSPACE = 5
     JOY_BUTTONS_SHIFT = (6, 7)
     JOY_BUTTON_RETURN = 11
+    JOY_BUTTON_CMD = 0
+    JOY_BUTTON_OPTION = 2
+    JOY_BUTTON_CTRL = 3
 
     LOOKUP = [
         [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
@@ -118,6 +121,15 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
 
+        elif event.button == self.JOY_BUTTON_CMD:
+            keyboard.press('command')
+
+        elif event.button == self.JOY_BUTTON_OPTION:
+            keyboard.press('option')
+
+        elif event.button == self.JOY_BUTTON_CTRL:
+            keyboard.press('control')
+
     def _button_up_event(self, event):
         if event.button == self.JOY_BUTTON_SPACE:
             keyboard.release('space')
@@ -130,6 +142,15 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
+
+        elif event.button == self.JOY_BUTTON_CMD:
+            keyboard.release('command')
+
+        elif event.button == self.JOY_BUTTON_OPTION:
+            keyboard.release('option')
+
+        elif event.button == self.JOY_BUTTON_CTRL:
+            keyboard.release('control')
 
     def _axis_move_event(self, event):
         if event.axis in self.JOY_AXIS_TO_LR:
