@@ -133,7 +133,7 @@ class KeyboardControllerEventHandler(object):
             keyboard.press('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.press('option')
+            keyboard.press(58)
 
         elif event.button == self.JOY_BUTTON_CTRL:
             keyboard.press('control')
@@ -157,7 +157,7 @@ class KeyboardControllerEventHandler(object):
             keyboard.release('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.release('option')
+            keyboard.release(58)
 
         elif event.button == self.JOY_BUTTON_CTRL:
             keyboard.release('control')
@@ -186,6 +186,9 @@ class KeyboardControllerEventHandler(object):
             if all((abs(i) == 0 for i in self.axis[left_right])):
                 if self.shift:
                     key = "shift+" + key
+                # comma is the separator for multiple keystrokes in the keyboard library
+                if key == "shift+,":
+                    key = "shift+<"
                 keyboard.send(key)
                 # os.system('clear')
                 # print(key)
