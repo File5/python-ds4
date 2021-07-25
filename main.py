@@ -6,17 +6,18 @@ from controller import Controller as JoystickController
 from mouse_controller import MouseControllerEventHandler
 from keyboard_controller import KeyboardControllerEventHandler
 from switch_controller import SwitchControllerEventHandler
-from help import AsciiKeyboard
+from help import AsciiKeyboard, AsciiDualShock
 
 
 class JoyButtonSwitchEventHandler:
     DEFAULT_SWITCH_BUTTON = 13
 
-    def __init__(self, values, button=None):
+    def __init__(self, values, button=None, on_switch=None):
         self.values = values
         if button is None:
             button = self.DEFAULT_SWITCH_BUTTON
         self.button = button
+        self.on_switch = on_switch
 
         self.switch_counter = 0
 
@@ -25,15 +26,62 @@ class JoyButtonSwitchEventHandler:
             if event.button == self.button:
                 self.switch_counter += 1
                 self.switch_counter %= 2
-                return self.values[self.switch_counter]
+                value = self.values[self.switch_counter]
+                if self.on_switch is not None:
+                    self.on_switch(value)
+                return value
         return None
+
+
+def create_ascii_dualshock(mode="mouse"):
+    tu = '  Mouse   '
+    td = ' Keyboard '
+    if mode == "mouse":
+        tu = '[' + tu + ']'
+        lau = lad = ''
+        lam = 'Slow'
+        rau = rad = ''
+        ram = 'Fast'
+        l2u = 'SCR'
+        l2d = 'OLL'
+        r2u = 'SCR'
+        r2d = 'OLL'
+        l1 = 'LMB'
+        r1 = 'RMB'
+    else:
+        td = '[' + td + ']'
+        lau = 'qwert'
+        lam = 'asdfg'
+        lad = 'zxcvb'
+        rau = 'yuiop'
+        ram = 'hjkl;'
+        rad = 'nm,./'
+        l2u = ''
+        l2d = '^'
+        r2u = ''
+        r2d = '^'
+        l1 = 'Space'
+        r1 = ' <-'
+
+    ds4 = AsciiDualShock()
+    ds4.text = dict(
+        L2U=l2u, L2D=l2d, R2U=r2u, R2D=r2d, L1=l1, R1=r1,
+        RT='Ctrl', RS='Cmd', RC='Opt', RX='',
+        TU=tu, TD=td,
+        LAU=lau, LAM=lam, LAD=lad,
+        RAU=rau, RAM=ram, RAD=rad,
+        LP='| |', RP='|⏎|'
+    )
+    return ds4
 
 
 def main():
     mouse = MouseControllerEventHandler()
     keyboard = KeyboardControllerEventHandler()
 
-    switch_handler = JoyButtonSwitchEventHandler(["mouse", "keyboard"])
+    switch_handler = JoyButtonSwitchEventHandler(["mouse", "keyboard"],
+        on_switch=lambda mode: print('\033[23F', create_ascii_dualshock(mode), sep='\n')
+    )
     switch_controller = SwitchControllerEventHandler(switch_handler, {
         "mouse": mouse.handlers_dict,
         "keyboard": keyboard.handlers_dict
@@ -75,7 +123,8 @@ def main():
         print('\033[12F')
         print(ascii_keyboard)
     keyboard.on_shift_changed = on_shift_changed
-    print(ascii_keyboard)
+
+    print(create_ascii_dualshock("mouse"))
 
     clock = pygame.time.Clock()
     while True:
