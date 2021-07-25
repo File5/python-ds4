@@ -93,7 +93,7 @@ class MouseControllerEventHandler:
 
     @property
     def buttons_used(self):
-        return JOY_BUTTON_LEFT_MOUSE_CLICK + JOY_BUTTON_RIGHT_MOUSE_CLICK + JOY_BUTTONS_SCROLL_MODE
+        return (self.JOY_BUTTON_LEFT_MOUSE_CLICK, self.JOY_BUTTON_RIGHT_MOUSE_CLICK) + self.JOY_BUTTONS_SCROLL_MODE
 
 
 if __name__ == "__main__":

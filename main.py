@@ -1,5 +1,7 @@
 import pygame
 
+from collections import OrderedDict
+
 from controller import Controller as JoystickController
 from mouse_controller import MouseControllerEventHandler
 from keyboard_controller import KeyboardControllerEventHandler
@@ -35,7 +37,19 @@ def main():
     switch_controller = SwitchControllerEventHandler(switch_handler, {
         "mouse": mouse.handlers_dict,
         "keyboard": keyboard.handlers_dict
-    }, "mouse")
+    }, "mouse", OrderedDict([
+        ("mouse", {
+            pygame.JOYBUTTONDOWN: mouse.buttons_used,
+            pygame.JOYBUTTONUP: mouse.buttons_used,
+            pygame.JOYAXISMOTION: tuple(range(6))
+        }),
+        ("keyboard", {
+            pygame.JOYAXISMOTION: tuple(range(6)),
+            pygame.JOYBUTTONDOWN: tuple(range(14)),
+            pygame.JOYBUTTONUP: tuple(range(14)),
+            pygame.JOYHATMOTION: (0, ),
+        })
+    ]))
 
     joystick = JoystickController(switch_controller.handlers_dict, init_controller=True)
 
