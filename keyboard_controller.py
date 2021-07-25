@@ -136,7 +136,7 @@ class KeyboardControllerEventHandler(object):
             keyboard.press(58)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.press('control')
+            keyboard.press(59)
 
     def _button_up_event(self, event):
         if event.button == self.JOY_BUTTON_SPACE:
@@ -160,7 +160,7 @@ class KeyboardControllerEventHandler(object):
             keyboard.release(58)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.release('control')
+            keyboard.release(59)
 
     def _axis_move_event(self, event):
         if event.axis in self.JOY_AXIS_TO_LR:
