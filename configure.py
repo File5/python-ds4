@@ -92,7 +92,50 @@ class Controller:
 
 
 def configure_axes(config):
-    pass
+    l = configure_left_right_axes('left')
+    r = configure_left_right_axes('right')
+    config['LEFT_AXIS'] = l
+    config['RIGHT_AXIS'] = r
+    config['JOY_AXIS'] = l + r
+
+
+def configure_left_right_axes(left_right):
+    eps = 0.1
+    axes_value = []
+
+    for i in ('up', 'left'):
+        current_values = {}
+        wait_release = False
+
+        ds_axis_prefix = 'L' if left_right == 'left' else 'R'
+        ds_axis_suffix = 'U' if i == 'up' else 'M'
+        ds_axis_value = '^' if i == 'up' else '<        '
+
+        c = Controller()
+        def _axis_motion_handler(event):
+            nonlocal wait_release
+            current_values[event.axis] = event.value
+            if wait_release:
+                if all((abs(v) < eps for v in current_values.values())):
+                    c.running = False
+            elif abs(event.value) > 1 - eps:
+                if i == 'up':
+                    axes_value.append(event.axis)
+                else:
+                    axes_value.insert(0, event.axis)
+                wait_release = True
+                ds = AsciiDualShock()
+                print('\033[23F', ds, sep='\n')
+        c.event_handlers = {
+            pygame.JOYAXISMOTION: [_axis_motion_handler],
+        }
+
+        ds = AsciiDualShock()
+        ds.text = {ds_axis_prefix + 'A' + ds_axis_suffix: ds_axis_value}
+        print('\033[23F', ds, sep='\n')
+        c.listen()
+
+    return tuple(axes_value)
 
 
 def configure_l2r2(config):
