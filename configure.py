@@ -96,7 +96,30 @@ def configure_axes(config):
 
 
 def configure_l2r2(config):
-    pass
+    c = Controller()
+    def _handler(event):
+        config['JOY_BUTTONS_SCROLL_MODE'] = config['JOY_BUTTONS_SHIFT'] = (event.button, )
+        c.running = False
+
+    c.event_handlers = {
+        pygame.JOYBUTTONDOWN: [_handler],
+    }
+    ds = AsciiDualShock()
+    ds.text = {'L2D': 'X'}
+    print('\033[23F', ds, sep='\n')
+    c.listen()
+
+    def _handler(event):
+        config['JOY_BUTTONS_SCROLL_MODE'] += (event.button, )
+        config['JOY_BUTTONS_SHIFT'] += (event.button, )
+        c.running = False
+    c.event_handlers = {
+        pygame.JOYBUTTONDOWN: [_handler],
+    }
+    ds = AsciiDualShock()
+    ds.text = {'R2D': 'X'}
+    print('\033[23F', ds, sep='\n')
+    c.listen()
 
 
 def configure_button(button, keys, config):
