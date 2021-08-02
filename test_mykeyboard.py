@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
+#
+# Distributed under terms of the MIT license.
+
 import numpy as np
 
 from mykeyboard import get_angle, get_dist, get_axis_item

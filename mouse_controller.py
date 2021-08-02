@@ -1,7 +1,7 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2020 Aleksandr Zuev <zuev08@gmail.com>
+# Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
 #
 # Distributed under terms of the MIT license.
 

@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
+#
+# Distributed under terms of the MIT license.
+
 from collections import OrderedDict
 from typing import Callable
 

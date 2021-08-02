@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
+#
+# Distributed under terms of the MIT license.
+
 class SpecialKey:
     def __init__(self, text, name, width, custom_upper_border=None):
         self.text = text
