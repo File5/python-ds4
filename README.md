@@ -87,6 +87,40 @@ The script prints key mapping so it's easy to understand the principle.
 '------'-----'-----'----------------------------'-----'-----'  '---_____---'
 ```
 
+Just a couple of words on typing. The main concept is that there are 8 directions of analog sticks and 2 degrees of tilt: small and large tilt. The central (resting) position is used to separate keystrokes.
+Having that in mind let's take a look at the following scheme.
+```
+                         ,---,   ,---,   ,---,
+                         | q |   | e |   | t |
+,---,---,---,---,---,    '---|---|---|---|---'
+| q | w | e | r | t |        | w | d | r |
+|---|---|---|---|---|    ,---|---|---|---|---,
+| a | s |<d>| f | g |    | a | s |< >| f | g |
+|---|---|---|---|---|    '---|---|---|---|---'
+| z | x | c | v | b |        | x | d | v |
+'---'---'---'---'---'    ,---|---|---|---|---,
+                         | z |   | c |   | b |
+                         '---'   '---'   '---'
+Part of keyboard view    Analog stick position
+```
+
+Note that `<d>` is in the `<` and `>` signs which are pointing to the left and right.
+This indicate that the key `d` is not selected (so, no key is selected on the left side)
+but small movement to the left or right will select `s` or `f` respectively.
+
+Actually, there is no empty space between keys, so e. g. the position between `q` and `e` will
+definitely belong to the closest key, but it's much easier to get either all the way up to `e`
+or diagonally to `q`, hence, it doesn't introduce any issues.
+
+So if you remember how the keyboard layout looks like then you can type without
+looking on the helping keyboard view:
+1. Move the analog stick in the chosen direction either slightly or to the end.
+This will select the key but the keystroke is not done yet.
+2. Let the analog stick return into resting position - this will register a keystroke.
+
+You can move left and right sticks independently and whatever stick returned to the
+resting position first will register a keystroke first.
+
 ## Support
 
 Numbers and `[` (`{`), `]` (`}`), `'` (`"`) keys are not implemented yet.
