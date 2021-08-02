@@ -151,3 +151,10 @@ and then follow on screen instructions.
 python3 main.py
 ```
 Help on key mapping is printed in the terminal.
+
+## ASCII art
+
+Thanks to Nieminen Mika and Euphrasie from [ASCII Art Archive](https://www.asciiart.eu/computers/keyboards)
+for the ideas and inspiration of keyboard ASCII art.
+
+Feel free to use my DualShock 4 and keyboard ASCII art if you like.
