@@ -8,6 +8,8 @@ from keyboard_controller import KeyboardControllerEventHandler
 from switch_controller import SwitchControllerEventHandler
 from help import AsciiKeyboard, AsciiDualShock
 
+import config
+
 
 class JoyButtonSwitchEventHandler:
     DEFAULT_SWITCH_BUTTON = 13
@@ -76,8 +78,8 @@ def create_ascii_dualshock(mode="mouse"):
 
 
 def main():
-    mouse = MouseControllerEventHandler()
-    keyboard = KeyboardControllerEventHandler()
+    mouse = MouseControllerEventHandler(config=config)
+    keyboard = KeyboardControllerEventHandler(config=config)
 
     switch_handler = JoyButtonSwitchEventHandler(["mouse", "keyboard"],
         on_switch=lambda mode: print('\033[23F', create_ascii_dualshock(mode), sep='\n')

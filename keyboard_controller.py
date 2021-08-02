@@ -54,22 +54,26 @@ class KeyboardControllerEventHandler(object):
         ]
     }
 
-    def __init__(self, axis_thr=None):
+    def __init__(self, axis_thr=None, config=None):
+        for attr in dir(config):
+            if hasattr(self, attr):
+                setattr(self, attr, getattr(config, attr))
+
         if axis_thr is None:
             axis_thr = self.DEFAULT_AXIS_THR
         self.axis_thr = axis_thr
 
         self.JOY_AXIS_TO_INTERNAL = {
-            KeyboardControllerEventHandler.JOY_AXIS[i] : i % 2
+            self.JOY_AXIS[i] : i % 2
             for i in range(4)
         }
         self.JOY_AXIS_TO_LR = {
-            KeyboardControllerEventHandler.JOY_AXIS[i] : "left" if i < 2 else "right"
+            self.JOY_AXIS[i] : "left" if i < 2 else "right"
             for i in range(4)
         }
         self.LR_TO_JOY_AXIS = {
-            "left": KeyboardControllerEventHandler.JOY_AXIS[:2],
-            "right": KeyboardControllerEventHandler.JOY_AXIS[2:]
+            "left": self.JOY_AXIS[:2],
+            "right": self.JOY_AXIS[2:]
         }
 
         self.last = {

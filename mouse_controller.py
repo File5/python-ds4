@@ -26,12 +26,16 @@ class MouseControllerEventHandler:
     JOY_BUTTON_RIGHT_MOUSE_CLICK = 5
     JOY_BUTTONS_SCROLL_MODE = (6, 7)
 
-    def __init__(self, left_axis_speed=None, right_axis_speed=None, axis_thr=None):
+    def __init__(self, left_axis_speed=None, right_axis_speed=None, axis_thr=None, config=None):
         """Initialize the event handler"""
 
         self.mouse = Controller()
         self.scroll_mode = False
         self.axis = defaultdict(lambda: 0)
+
+        for attr in dir(config):
+            if hasattr(self, attr):
+                setattr(self, attr, getattr(config, attr))
 
         if left_axis_speed is None:
             left_axis_speed = self.DEFAULT_LEFT_AXIS_SPEED
