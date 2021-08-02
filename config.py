@@ -1,3 +1,7 @@
+# Switch
+
+JOY_BUTTON_SWITCH = 13
+
 # Mouse
 
 LEFT_AXIS = (0, 1)

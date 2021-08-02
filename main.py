@@ -82,6 +82,7 @@ def main():
     keyboard = KeyboardControllerEventHandler(config=config)
 
     switch_handler = JoyButtonSwitchEventHandler(["mouse", "keyboard"],
+        button=getattr(config, "JOY_BUTTON_SWITCH", 13),
         on_switch=lambda mode: print('\033[23F', create_ascii_dualshock(mode), sep='\n')
     )
     switch_controller = SwitchControllerEventHandler(switch_handler, {
