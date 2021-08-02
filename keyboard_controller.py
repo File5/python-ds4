@@ -12,18 +12,6 @@ import numpy as np
 from controller import Controller as JoystickController
 
 
-def get_axis_item(x, y, data):
-    angle = get_angle(x, y)
-    dist = get_dist(x, y)
-
-    lookup = [
-        [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
-        [(1, 4), (0, 4), (0, 2), (0, 0), (1, 0), (2, 0), (2, 2), (2, 4)], # dist = 2
-    ]
-    row, col = lookup[dist - 1][angle]
-    return data[row][col]
-
-
 class KeyboardControllerEventHandler(object):
     """Controller event handler which performs keyboard control"""
 
