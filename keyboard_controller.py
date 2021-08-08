@@ -115,6 +115,8 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button in self.JOY_BUTTONS_SHIFT:
             self.shift = True
+            keyboard.press('shift')
+
             if self.on_shift_changed is not None:
                 self.on_shift_changed(True)
 
@@ -139,6 +141,8 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button in self.JOY_BUTTONS_SHIFT:
             self.shift = False
+            keyboard.release('shift')
+
             if self.on_shift_changed is not None:
                 self.on_shift_changed(False)
 
@@ -176,8 +180,6 @@ class KeyboardControllerEventHandler(object):
                     self.on_current_key_changed(self.current_key)
 
             if all((abs(i) == 0 for i in self.axis[left_right])):
-                if self.shift:
-                    key = "shift+" + key
                 # comma is the separator for multiple keystrokes in the keyboard library
                 if key == "shift+,":
                     key = "shift+<"
