@@ -1,5 +1,5 @@
 numpy
 pygame>=2.0.0
-keyboard
+-e git+https://github.com/File5/keyboard@fix-macos-holdkey#egg=keyboard
 pynput
 

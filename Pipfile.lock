@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "505462a1d8573aa7e6ddf594c35b5b549bb067c2f0583f963b55bd28ff164210"
+            "sha256": "c78e65d8f111b360d54db3da4d41ea86a5e37c0c011d8c7d30936ef96a57ee97"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -17,12 +17,14 @@
     },
     "default": {
         "keyboard": {
-            "hashes": [
-                "sha256:63ed83305955939ca5c9a73755e5cc43e8242263f5ad5fd3bb7e0b032f3d308b",
-                "sha256:8e9c2422f1217e0bd84489b9ecd361027cc78415828f4fe4f88dd4acd587947b"
-            ],
-            "index": "pypi",
-            "version": "==0.13.5"
+            "editable": true,
+            "git": "https://github.com/File5/keyboard",
+            "ref": "a7e51908d41f3ab773f701eb1e102350fa8b3c7e"
+        },
+        "mouse": {
+            "editable": true,
+            "git": "https://github.com/boppreh/mouse",
+            "ref": "50384a4decd4dc94cb7449538b37c31b1d492f42"
         },
         "numpy": {
             "hashes": [
@@ -119,6 +121,7 @@
                 "sha256:322b07420f91b2dd7f624823e53046b922cab4aad28baab01a62463728b7e0c5",
                 "sha256:8a42710a73e6a7e4c332619aa3ea6d9981edadefafe4492f295c10fb7f14c4d2"
             ],
+            "index": "pypi",
             "markers": "sys_platform == 'darwin'",
             "version": "==7.3"
         },
