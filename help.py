@@ -33,11 +33,19 @@ class AsciiKeyboard:
     def __init__(self):
         self.highlight = {}
         self.shift = False
+        self.extended = False
         self._keys = [
             ['§'] + [str(i) for i in range(1, 10)] + ['0', '-', '=', self.BACKSPACE_KEY],
             [self.TAB_KEY, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', self.RETURN_UPPER_KEY],
             [self.CAPS_LOCK_KEY, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', self.RETURN_KEY],
             [self.LSHIFT_KEY, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', self.RSHIFT_KEY],
+            [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
+        ]
+        self._extended_keys = [
+            [' '] + [' ' for i in range(1, 10)] + [' ', ' ', ' ', self.BACKSPACE_KEY],
+            [self.TAB_KEY, ' ', '1', '2', '3', ' ', ' ', '0', '-', '=', ' ', ' ', ' ', self.RETURN_UPPER_KEY],
+            [self.CAPS_LOCK_KEY, ' ', '4', '5', '6', ' ', ' ', '[', '\'', ']', ' ', ' ', self.RETURN_KEY],
+            [self.LSHIFT_KEY, ' ', '7', '8', '9', ' ', ' ', ' ', ' ', ' ', ' ', self.RSHIFT_KEY],
             [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
         ]
         self._shift = {
@@ -121,7 +129,8 @@ class AsciiKeyboard:
             result_rows.append(result_row)
         
         delim_indexes = set()
-        for i, row in enumerate(self._keys):
+        keys = self._extended_keys if self.extended else self._keys
+        for i, row in enumerate(keys):
             delim_indexes = upper_part(row, delim_indexes, first=i == 0)
             lower_part(row)
 

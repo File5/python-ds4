@@ -67,8 +67,8 @@ def create_ascii_dualshock(mode="mouse"):
         rad = 'nm,./'
         l2u = ''
         l2d = '^'
-        r2u = ''
-        r2d = '^'
+        r2u = '1'
+        r2d = ']'
         l1 = 'Space'
         r1 = ' <-'
 
@@ -133,6 +133,11 @@ def main():
         print('\033[12F')
         print(ascii_keyboard)
     keyboard.on_shift_changed = on_shift_changed
+    def on_extended_changed(extended):
+        ascii_keyboard.extended = extended
+        print('\033[12F')
+        print(ascii_keyboard)
+    keyboard.on_extended_changed = on_extended_changed
 
     print(create_ascii_dualshock("mouse"))
 

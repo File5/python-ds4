@@ -148,7 +148,8 @@ def configure_left_right_axes(left_right):
 def configure_l2r2(config):
     c = Controller()
     def _handler(event):
-        config['JOY_BUTTONS_SCROLL_MODE'] = config['JOY_BUTTONS_SHIFT'] = (event.button, )
+        config['JOY_BUTTONS_SCROLL_MODE'] = (event.button, )
+        config['JOY_BUTTON_SHIFT'] = event.button
         c.running = False
 
     c.event_handlers = {
@@ -161,7 +162,7 @@ def configure_l2r2(config):
 
     def _handler(event):
         config['JOY_BUTTONS_SCROLL_MODE'] += (event.button, )
-        config['JOY_BUTTONS_SHIFT'] += (event.button, )
+        config['JOY_BUTTON_EXTENDED'] = event.button
         c.running = False
     c.event_handlers = {
         pygame.JOYBUTTONDOWN: [_handler],
@@ -197,9 +198,9 @@ CONFIGURE_SEQUENCE = OrderedDict([
     ('RP', ['JOY_BUTTON_RETURN']),
     ('TU', ['JOY_BUTTON_SWITCH']),
     ('L1', ['JOY_BUTTON_LEFT_MOUSE_CLICK', 'JOY_BUTTON_SPACE']),
-    #('L2D', ['JOY_BUTTONS_SCROLL_MODE', 'JOY_BUTTONS_SHIFT']),
+    #('L2D', ['JOY_BUTTONS_SCROLL_MODE', 'JOY_BUTTON_SHIFT']),
     ('R1', ['JOY_BUTTON_RIGHT_MOUSE_CLICK', 'JOY_BUTTON_BACKSPACE']),
-    #('R2D', []),
+    #('R2D', ['JOY_BUTTON_EXTENDED']),
     ('L2R2', configure_l2r2),
     ('RT', ['JOY_BUTTON_CTRL']),
     ('RS', ['JOY_BUTTON_CMD']),
@@ -234,7 +235,8 @@ if __name__ == "__main__":
 
         ('JOY_BUTTON_SPACE', 4),
         ('JOY_BUTTON_BACKSPACE', 5),
-        ('JOY_BUTTONS_SHIFT', (6, 7)),
+        ('JOY_BUTTON_SHIFT', 6),
+        ('JOY_BUTTON_EXTENDED', 7),
         ('JOY_BUTTON_RETURN', 11),
         ('JOY_BUTTON_CMD', 0),
         ('JOY_BUTTON_OPTION', 2),

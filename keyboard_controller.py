@@ -19,7 +19,8 @@ class KeyboardControllerEventHandler(object):
     JOY_AXIS = (0, 1, 2, 5)
     JOY_BUTTON_SPACE = 4
     JOY_BUTTON_BACKSPACE = 5
-    JOY_BUTTONS_SHIFT = (6, 7)
+    JOY_BUTTON_SHIFT = 6
+    JOY_BUTTON_EXTENDED = 7
     JOY_BUTTON_RETURN = 11
     JOY_BUTTON_CMD = 0
     JOY_BUTTON_OPTION = 2
@@ -73,6 +74,7 @@ class KeyboardControllerEventHandler(object):
             "right": [0, 0],
         }
         self.shift = False
+        self.extended = False
 
         self.keyboard_layout = self.DEFAULT_KEYBOARD_LAYOUT
         self.current_key = {
@@ -81,6 +83,7 @@ class KeyboardControllerEventHandler(object):
         }
         self.on_current_key_changed = None
         self.on_shift_changed = None
+        self.on_extended_changed = None
 
     @staticmethod
     def _get_angle(x, y):
@@ -113,12 +116,18 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.press('backspace')
 
-        elif event.button in self.JOY_BUTTONS_SHIFT:
+        elif event.button == self.JOY_BUTTON_SHIFT:
             self.shift = True
             keyboard.press('shift')
 
             if self.on_shift_changed is not None:
                 self.on_shift_changed(True)
+
+        elif event.button == self.JOY_BUTTON_EXTENDED:
+            self.extended = True
+
+            if self.on_extended_changed is not None:
+                self.on_extended_changed(True)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
@@ -139,12 +148,18 @@ class KeyboardControllerEventHandler(object):
         if event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.release('backspace')
 
-        elif event.button in self.JOY_BUTTONS_SHIFT:
+        elif event.button == self.JOY_BUTTON_SHIFT:
             self.shift = False
             keyboard.release('shift')
 
             if self.on_shift_changed is not None:
                 self.on_shift_changed(False)
+
+        elif event.button == self.JOY_BUTTON_EXTENDED:
+            self.extended = False
+
+            if self.on_extended_changed is not None:
+                self.on_extended_changed(False)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
