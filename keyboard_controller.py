@@ -21,10 +21,12 @@ class KeyboardControllerEventHandler(object):
     JOY_BUTTON_BACKSPACE = 5
     JOY_BUTTON_SHIFT = 6
     JOY_BUTTON_EXTENDED = 7
+    JOY_BUTTON_TAB = 10
     JOY_BUTTON_RETURN = 11
     JOY_BUTTON_CMD = 0
     JOY_BUTTON_OPTION = 2
     JOY_BUTTON_CTRL = 3
+    JOY_BUTTON_ESC = 1
 
     LOOKUP = [
         [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
@@ -145,6 +147,9 @@ class KeyboardControllerEventHandler(object):
             if self.on_state_changed is not None:
                 self.on_state_changed(self)
 
+        elif event.button == self.JOY_BUTTON_TAB:
+            keyboard.press('tab')
+
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
 
@@ -156,6 +161,9 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button == self.JOY_BUTTON_CTRL:
             keyboard.press(59)
+
+        elif event.button == self.JOY_BUTTON_ESC:
+            keyboard.press('esc')
 
     def _button_up_event(self, event):
         if event.button == self.JOY_BUTTON_SPACE:
@@ -177,6 +185,9 @@ class KeyboardControllerEventHandler(object):
             if self.on_state_changed is not None:
                 self.on_state_changed(self)
 
+        elif event.button == self.JOY_BUTTON_TAB:
+            keyboard.release('tab')
+
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
 
@@ -188,6 +199,9 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button == self.JOY_BUTTON_CTRL:
             keyboard.release(59)
+
+        elif event.button == self.JOY_BUTTON_ESC:
+            keyboard.release('esc')
 
     def _axis_move_event(self, event):
         if event.axis in self.JOY_AXIS_TO_LR:

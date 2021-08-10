@@ -195,6 +195,7 @@ CONFIGURE_SEQUENCE = OrderedDict([
     #('LAM', []),
     #('RAU', []),
     #('RAM', []),
+    ('LP', ['JOY_BUTTON_TAB']),
     ('RP', ['JOY_BUTTON_RETURN']),
     ('TU', ['JOY_BUTTON_SWITCH']),
     ('L1', ['JOY_BUTTON_LEFT_MOUSE_CLICK', 'JOY_BUTTON_SPACE']),
@@ -205,7 +206,7 @@ CONFIGURE_SEQUENCE = OrderedDict([
     ('RT', ['JOY_BUTTON_CTRL']),
     ('RS', ['JOY_BUTTON_CMD']),
     ('RC', ['JOY_BUTTON_OPTION']),
-    #('RX', []),
+    ('RX', ['JOY_BUTTON_ESC']),
 ])
 
 
@@ -237,10 +238,12 @@ if __name__ == "__main__":
         ('JOY_BUTTON_BACKSPACE', 5),
         ('JOY_BUTTON_SHIFT', 6),
         ('JOY_BUTTON_EXTENDED', 7),
+        ('JOY_BUTTON_TAB', 10),
         ('JOY_BUTTON_RETURN', 11),
         ('JOY_BUTTON_CMD', 0),
         ('JOY_BUTTON_OPTION', 2),
-        ('JOY_BUTTON_CTRL', 3)
+        ('JOY_BUTTON_CTRL', 3),
+        ('JOY_BUTTON_ESC', 1),
     ])
 
     def axis_motion_handler(event):

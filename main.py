@@ -75,11 +75,11 @@ def create_ascii_dualshock(mode="mouse"):
     ds4 = AsciiDualShock()
     ds4.text = dict(
         L2U=l2u, L2D=l2d, R2U=r2u, R2D=r2d, L1=l1, R1=r1,
-        RT='Ctrl', RS='Cmd', RC='Opt', RX='',
+        RT='Ctrl', RS='Cmd', RC='Opt', RX='Esc',
         TU=tu, TD=td,
         LAU=lau, LAM=lam, LAD=lad,
         RAU=rau, RAM=ram, RAD=rad,
-        LP='| |', RP='|⏎|'
+        LP='->|', RP='|⏎|'
     )
     return ds4
 
