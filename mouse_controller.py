@@ -9,8 +9,6 @@ from collections import defaultdict
 
 import pygame
 import mouse
-from pynput.mouse import Button, Controller
-
 from controller import Controller as JoystickController
 
 class MouseControllerEventHandler:
@@ -30,7 +28,7 @@ class MouseControllerEventHandler:
     def __init__(self, left_axis_speed=None, right_axis_speed=None, axis_thr=None, config=None):
         """Initialize the event handler"""
 
-        self.mouse = Controller()
+        self._mouse_wheel = getattr(mouse._os_mouse, '__wheel', lambda y, _: mouse.wheel(y))
         self.scroll_mode = False
         self.axis = defaultdict(lambda: 0)
 
@@ -84,9 +82,9 @@ class MouseControllerEventHandler:
 
         if abs(axis0) > 0 or abs(axis1) > 0:
             if self.scroll_mode:
-                self.mouse.scroll(axis0 * 100, axis1 * 100)
+                self._mouse_wheel(axis0 * 100, axis1 * 100)
             else:
-                self.mouse.move(axis0 * 100, axis1 * 100)
+                mouse.move(axis0 * 100, axis1 * 100, absolute=False)
 
     @property
     def handlers_dict(self):

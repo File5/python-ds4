@@ -1,5 +1,4 @@
 numpy
 pygame>=2.0.0
 -e git+https://github.com/File5/keyboard@fix-macos-holdkey#egg=keyboard
-pynput
 -e git+https://github.com/boppreh/mouse#egg=mouse
