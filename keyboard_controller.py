@@ -42,6 +42,18 @@ class KeyboardControllerEventHandler(object):
             "nm,./",
         ]
     }
+    EXTENDED_KEYBOARD_LAYOUT = {
+        "left": [
+            "11233",
+            "44566",
+            "77899",
+        ],
+        "right": [
+            "00-==",
+            "[[']]",
+            "§§§§§",
+        ]
+    }
 
     def __init__(self, axis_thr=None, config=None):
         for attr in dir(config):
@@ -76,7 +88,6 @@ class KeyboardControllerEventHandler(object):
         self.shift = False
         self.extended = False
 
-        self.keyboard_layout = self.DEFAULT_KEYBOARD_LAYOUT
         self.current_key = {
             "left": "",
             "right": "",
@@ -100,6 +111,13 @@ class KeyboardControllerEventHandler(object):
         v = np.array([x, y])
         return 2 if np.linalg.norm(v, ord=4) > 0.9 else 1
         return 2 if np.all(np.abs(v) > 0.6) else 1
+
+    @property
+    def keyboard_layout(self):
+        if self.extended:
+            return self.EXTENDED_KEYBOARD_LAYOUT
+        else:
+            return self.DEFAULT_KEYBOARD_LAYOUT
 
     def _get_key(self, left_right, x, y):
         angle = self._get_angle(x, y)
