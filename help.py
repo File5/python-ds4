@@ -13,6 +13,20 @@ class SpecialKey:
         self.custom_upper_border = custom_upper_border
 
 
+class UpdatingSpecialKey(SpecialKey):
+    def __init__(self, text_func, name, width, custom_upper_border=None):
+        super().__init__('', name, width, custom_upper_border)
+        self.text_func = text_func
+
+    @property
+    def text(self):
+        return self.text_func()
+
+    @text.setter
+    def text(self, _):
+        pass  # silently ignore
+
+
 class AsciiKeyboard:
     BACKSPACE_KEY = SpecialKey('<-', '<Backspace>', 5)
     TAB_KEY = SpecialKey('->|', '<Tab>', 3)
@@ -33,7 +47,9 @@ class AsciiKeyboard:
     def __init__(self):
         self.highlight = {}
         self.shift = False
+        self.caps_lock = False
         self.extended = False
+        self.CAPS_LOCK_KEY = UpdatingSpecialKey(lambda: 'CAPS' if self.caps_lock else 'Caps', '<CapsLock>', 4)
         self._keys = [
             ['§'] + [str(i) for i in range(1, 10)] + ['0', '-', '=', self.BACKSPACE_KEY],
             [self.TAB_KEY, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', self.RETURN_UPPER_KEY],
@@ -113,7 +129,7 @@ class AsciiKeyboard:
                     text = key.text
                 else:
                     width = 1
-                    if self.shift and (key.isalpha() or key in self._shift):
+                    if (self.shift and (key.isalpha() or key in self._shift)) or self.caps_lock and key.isalpha():
                         if key in self._shift:
                             text = self._shift[key]
                         else:

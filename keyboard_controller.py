@@ -23,6 +23,7 @@ class KeyboardControllerEventHandler(object):
     JOY_BUTTON_EXTENDED = 7
     JOY_BUTTON_TAB = 10
     JOY_BUTTON_RETURN = 11
+    JOY_BUTTON_CAPS_LOCK = 8
     JOY_BUTTON_CMD = 0
     JOY_BUTTON_OPTION = 2
     JOY_BUTTON_CTRL = 3
@@ -88,6 +89,7 @@ class KeyboardControllerEventHandler(object):
             "right": [0, 0],
         }
         self.shift = False
+        self.caps_lock = False
         self.extended = False
 
         self.current_key = {
@@ -153,6 +155,13 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
 
+        elif event.button == self.JOY_BUTTON_CAPS_LOCK:
+            self.caps_lock = not self.caps_lock
+            keyboard.press('caps lock')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
         elif event.button == self.JOY_BUTTON_CMD:
             keyboard.press('command')
 
@@ -191,6 +200,12 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
 
+        elif event.button == self.JOY_BUTTON_CAPS_LOCK:
+            keyboard.release('caps lock')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
         elif event.button == self.JOY_BUTTON_CMD:
             keyboard.release('command')
 
@@ -225,6 +240,8 @@ class KeyboardControllerEventHandler(object):
                     self.on_state_changed(self)
 
             if all((abs(i) == 0 for i in self.axis[left_right])):
+                if key.isalpha() and self.caps_lock:
+                    key = "shift+" + key
                 # comma is the separator for multiple keystrokes in the keyboard library
                 if key == "shift+,":
                     key = "shift+<"

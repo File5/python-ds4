@@ -77,6 +77,7 @@ def create_ascii_dualshock(mode="mouse"):
         L2U=l2u, L2D=l2d, R2U=r2u, R2D=r2d, L1=l1, R1=r1,
         RT='Ctrl', RS='Cmd', RC='Opt', RX='Esc',
         TU=tu, TD=td,
+        LONGSH='CapsLock',
         LAU=lau, LAM=lam, LAD=lad,
         RAU=rau, RAM=ram, RAD=rad,
         LP='->|', RP='|⏎|'
@@ -117,9 +118,11 @@ def main():
     def on_state_changed(keyboard_controller):
         current_keys = keyboard_controller.current_key
         shift = keyboard_controller.shift
+        caps_lock = keyboard_controller.caps_lock
         extended = keyboard_controller.extended
 
         ascii_keyboard.shift = shift
+        ascii_keyboard.caps_lock = caps_lock
         ascii_keyboard.extended = extended
 
         highlight = {}
