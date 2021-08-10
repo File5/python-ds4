@@ -51,7 +51,7 @@ class KeyboardControllerEventHandler(object):
         "right": [
             "00-==",
             "[[']]",
-            "§§§§§",
+            "§§`\\\\",
         ]
     }
 

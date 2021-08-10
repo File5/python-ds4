@@ -45,13 +45,14 @@ class AsciiKeyboard:
             [' '] + [' ' for i in range(1, 10)] + [' ', ' ', ' ', self.BACKSPACE_KEY],
             [self.TAB_KEY, ' ', '1', '2', '3', ' ', ' ', '0', '-', '=', ' ', ' ', ' ', self.RETURN_UPPER_KEY],
             [self.CAPS_LOCK_KEY, ' ', '4', '5', '6', ' ', ' ', '[', '\'', ']', ' ', ' ', self.RETURN_KEY],
-            [self.LSHIFT_KEY, ' ', '7', '8', '9', ' ', ' ', ' ', ' ', ' ', ' ', self.RSHIFT_KEY],
+            [self.LSHIFT_KEY, ' ', '7', '8', '9', ' ', ' ', '§', '`', '\\', ' ', self.RSHIFT_KEY],
             [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
         ]
         self._shift = {
             '[': '{', ']': '}', ';': ':', '\'': '"', ',': '<', '.': '>', '/': '?',
             '1': '!', '2': '@', '3': '#', '4': '$', '5': '%', '6': '^', '7': '&', '8': '*', '9': '(', '0': ')',
             '-': '_', '=': '+',
+            '§': '±', '`': '~', '\\': '|',
         }
 
     def __str__(self):
