@@ -92,9 +92,7 @@ class KeyboardControllerEventHandler(object):
             "left": "",
             "right": "",
         }
-        self.on_current_key_changed = None
-        self.on_shift_changed = None
-        self.on_extended_changed = None
+        self.on_state_changed = None
 
     @staticmethod
     def _get_angle(x, y):
@@ -138,14 +136,14 @@ class KeyboardControllerEventHandler(object):
             self.shift = True
             keyboard.press('shift')
 
-            if self.on_shift_changed is not None:
-                self.on_shift_changed(True)
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_EXTENDED:
             self.extended = True
 
-            if self.on_extended_changed is not None:
-                self.on_extended_changed(True)
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
@@ -170,14 +168,14 @@ class KeyboardControllerEventHandler(object):
             self.shift = False
             keyboard.release('shift')
 
-            if self.on_shift_changed is not None:
-                self.on_shift_changed(False)
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_EXTENDED:
             self.extended = False
 
-            if self.on_extended_changed is not None:
-                self.on_extended_changed(False)
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
@@ -209,8 +207,8 @@ class KeyboardControllerEventHandler(object):
             key = self._get_key(left_right, x, y)
             if self.current_key[left_right] != key:
                 self.current_key[left_right] = key
-                if self.on_current_key_changed:
-                    self.on_current_key_changed(self.current_key)
+                if self.on_state_changed:
+                    self.on_state_changed(self)
 
             if all((abs(i) == 0 for i in self.axis[left_right])):
                 # comma is the separator for multiple keystrokes in the keyboard library
@@ -222,8 +220,8 @@ class KeyboardControllerEventHandler(object):
                 # print(self.last[left_right])
                 self.last[left_right] = [0, 0]
                 self.current_key[left_right] = ""
-                if self.on_current_key_changed:
-                    self.on_current_key_changed(self.current_key)
+                if self.on_state_changed:
+                    self.on_state_changed(self)
 
     def _hat_move_event(self, event):
         pass

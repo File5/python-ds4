@@ -114,30 +114,29 @@ def main():
     ascii_keyboard = AsciiKeyboard()
     ascii_keyboard.highlight = {"d": ('<', '>'), "k": ('<', '>')}
 
-    def on_current_key_changed(current_keys):
+    def on_state_changed(keyboard_controller):
+        current_keys = keyboard_controller.current_key
+        shift = keyboard_controller.shift
+        extended = keyboard_controller.extended
+
+        ascii_keyboard.shift = shift
+        ascii_keyboard.extended = extended
+
         highlight = {}
         for left_right in current_keys:
             if current_keys[left_right] == "":
                 if left_right == "left":
-                    highlight["d"] = ('<', '>')
+                    default_highlight = "5" if ascii_keyboard.extended else "d"
+                    highlight[default_highlight] = ('<', '>')
                 else:
-                    highlight["k"] = ('<', '>')
+                    default_highlight = "'" if ascii_keyboard.extended else "k"
+                    highlight[default_highlight] = ('<', '>')
             else:
                 highlight[current_keys[left_right]] = ('[', ']')
         ascii_keyboard.highlight = highlight
         print('\033[12F')
         print(ascii_keyboard)
-    keyboard.on_current_key_changed = on_current_key_changed
-    def on_shift_changed(shift):
-        ascii_keyboard.shift = shift
-        print('\033[12F')
-        print(ascii_keyboard)
-    keyboard.on_shift_changed = on_shift_changed
-    def on_extended_changed(extended):
-        ascii_keyboard.extended = extended
-        print('\033[12F')
-        print(ascii_keyboard)
-    keyboard.on_extended_changed = on_extended_changed
+    keyboard.on_state_changed = on_state_changed
 
     print(create_ascii_dualshock("mouse"))
 
