@@ -189,6 +189,55 @@ def configure_button(button, keys, config):
     c.listen()
 
 
+def configure_arrows(config):
+    c = Controller(init_controller=True)
+    if c.controller.get_numhats() > 0:
+        # configure the hat (d-pad)
+        config_value = {
+            "type": "hat",
+            "indexes": tuple(),
+        }
+        for button in ('DU', 'DL'):
+            wait_release = False
+            def _handler(event):
+                # get index of non-zero value of event.value
+                nonlocal wait_release
+                index = next(
+                    (i for i, v in enumerate(event.value) if v != 0), None
+                )
+                if index is not None:
+                    config_value['indexes'] += (index, )
+                    wait_release = True
+                    ds = AsciiDualShock()
+                    print('\033[23F', ds, sep='\n')
+                else:
+                    wait_release = False
+                    c.running = False
+            c.event_handlers = {
+                pygame.JOYHATMOTION: [_handler],
+            }
+            ds = AsciiDualShock()
+            ds.text = {button: 'X'}
+            print('\033[23F', ds, sep='\n')
+            c.listen()
+        config['JOY_ARROWS'] = config_value
+
+    else:
+        # configure the buttons
+        config_value = {
+            "type": "buttons",
+        }
+        configure_sequence = [
+            ('DU', ['UP']),
+            ('DD', ['DOWN']),
+            ('DL', ['LEFT']),
+            ('DR', ['RIGHT']),
+        ]
+        for k, v in configure_sequence:
+            configure_button(k, v, config_value)
+        config['JOY_ARROWS'] = config_value
+
+
 CONFIGURE_SEQUENCE = OrderedDict([
     ('AXES', configure_axes),
     #('LAU', []),
@@ -208,6 +257,7 @@ CONFIGURE_SEQUENCE = OrderedDict([
     ('RS', ['JOY_BUTTON_CMD']),
     ('RC', ['JOY_BUTTON_OPTION']),
     ('RX', ['JOY_BUTTON_ESC']),
+    ('ARROWS', configure_arrows),
 ])
 
 
@@ -246,6 +296,7 @@ if __name__ == "__main__":
         ('JOY_BUTTON_OPTION', 2),
         ('JOY_BUTTON_CTRL', 3),
         ('JOY_BUTTON_ESC', 1),
+        ('JOY_ARROWS', {'type': 'hat', 'indexes': (1, 0)}),
     ])
 
     def axis_motion_handler(event):

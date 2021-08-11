@@ -26,3 +26,4 @@ JOY_BUTTON_CMD = 0
 JOY_BUTTON_OPTION = 2
 JOY_BUTTON_CTRL = 3
 JOY_BUTTON_ESC = 1
+JOY_ARROWS = {'type': 'hat', 'indexes': (1, 0)}
