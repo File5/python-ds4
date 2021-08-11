@@ -28,6 +28,7 @@ class KeyboardControllerEventHandler(object):
     JOY_BUTTON_OPTION = 2
     JOY_BUTTON_CTRL = 3
     JOY_BUTTON_ESC = 1
+    JOY_ARROWS = {'type': 'hat', 'indexes': (1, 0)}
 
     LOOKUP = [
         [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
@@ -96,6 +97,7 @@ class KeyboardControllerEventHandler(object):
             "left": "",
             "right": "",
         }
+        self.current_arrows = set()
         self.on_state_changed = None
 
     @staticmethod
@@ -255,7 +257,27 @@ class KeyboardControllerEventHandler(object):
                     self.on_state_changed(self)
 
     def _hat_move_event(self, event):
-        pass
+        indexes = self.JOY_ARROWS.get("indexes", (1, 0))
+        if event.hat == 0:
+            hat_axes = [
+                (0, ("down", "up")),
+                (1, ("left", "right")),
+            ]
+            for i, directions in hat_axes:
+                lt0, gt0 = directions
+                if event.value[indexes[i]] < 0:
+                    self.current_arrows.add(lt0)
+                    keyboard.press(lt0)
+                elif event.value[indexes[i]] > 0:
+                    self.current_arrows.add(gt0)
+                    keyboard.press(gt0)
+                # else if 0 and self.current_arrows has our values
+                elif self.current_arrows.intersection({lt0, gt0}):
+                    if lt0 in self.current_arrows:
+                        keyboard.release(lt0)
+                    if gt0 in self.current_arrows:
+                        keyboard.release(gt0)
+                    self.current_arrows.difference_update({lt0, gt0})
 
     @property
     def handlers_dict(self):
