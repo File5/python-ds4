@@ -101,7 +101,7 @@ def main():
         ("mouse", {
             pygame.JOYBUTTONDOWN: mouse.buttons_used,
             pygame.JOYBUTTONUP: mouse.buttons_used,
-            pygame.JOYAXISMOTION: tuple(range(6))
+            pygame.JOYAXISMOTION: mouse.axes_used
         }),
         ("keyboard", {
             pygame.JOYAXISMOTION: tuple(range(6)),

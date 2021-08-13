@@ -23,12 +23,12 @@ class MouseControllerEventHandler:
 
     JOY_BUTTON_LEFT_MOUSE_CLICK = 4
     JOY_BUTTON_RIGHT_MOUSE_CLICK = 5
-    JOY_BUTTON_SCROLL_MODE = 7
+    JOY_SCROLL_MODE = {'type': 'button', 'value': 7}
 
     def __init__(self, left_axis_speed=None, right_axis_speed=None, axis_thr=None, config=None):
         """Initialize the event handler"""
 
-        self._mouse_wheel = getattr(mouse._os_mouse, '__wheel', lambda y, _: mouse.wheel(y))
+        self._mouse_wheel = getattr(mouse._os_mouse, '__wheel', lambda _, y: mouse.wheel(y))
         self.scroll_mode = False
         self.axis = defaultdict(lambda: 0)
 
@@ -55,7 +55,8 @@ class MouseControllerEventHandler:
         elif event.button == self.JOY_BUTTON_RIGHT_MOUSE_CLICK:
             mouse.press('right')
 
-        elif event.button == self.JOY_BUTTON_SCROLL_MODE:
+        elif (self.JOY_SCROLL_MODE.get('type') == 'button' and
+                event.button == self.JOY_SCROLL_MODE['value']):
             self.scroll_mode = True
 
     def _button_up_event(self, event):
@@ -65,12 +66,21 @@ class MouseControllerEventHandler:
         elif event.button == self.JOY_BUTTON_RIGHT_MOUSE_CLICK:
             mouse.release('right')
 
-        elif event.button == self.JOY_BUTTON_SCROLL_MODE:
+        elif (self.JOY_SCROLL_MODE.get('type') == 'button' and
+                event.button == self.JOY_SCROLL_MODE['value']):
             self.scroll_mode = False
 
     def _axis_move_event(self, event):
         if event.axis in self.LEFT_AXIS + self.RIGHT_AXIS:
             self.axis[event.axis] = event.value
+        
+        elif (self.JOY_SCROLL_MODE.get('type') == 'axis' and
+                event.axis == self.JOY_SCROLL_MODE['value']):
+            if not self.scroll_mode and event.value > -0.85:
+                self.scroll_mode = True
+
+            elif self.scroll_mode and event.value < -0.95:
+                self.scroll_mode = False
 
     def main_loop_iteration(self):
         values = [self.axis[k] for k in self.LEFT_AXIS + self.RIGHT_AXIS]
@@ -96,7 +106,17 @@ class MouseControllerEventHandler:
 
     @property
     def buttons_used(self):
-        return (self.JOY_BUTTON_LEFT_MOUSE_CLICK, self.JOY_BUTTON_RIGHT_MOUSE_CLICK, self.JOY_BUTTON_SCROLL_MODE)
+        used = (self.JOY_BUTTON_LEFT_MOUSE_CLICK, self.JOY_BUTTON_RIGHT_MOUSE_CLICK)
+        if self.JOY_SCROLL_MODE.get('type') == 'button':
+            used += (self.JOY_SCROLL_MODE['value'], )
+        return used
+
+    @property
+    def axes_used(self):
+        used = self.LEFT_AXIS + self.RIGHT_AXIS
+        if self.JOY_SCROLL_MODE.get('type') == 'axis':
+            used += (self.JOY_SCROLL_MODE['value'], )
+        return used
 
 
 if __name__ == "__main__":

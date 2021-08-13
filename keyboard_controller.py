@@ -19,8 +19,8 @@ class KeyboardControllerEventHandler(object):
     JOY_AXIS = (0, 1, 2, 5)
     JOY_BUTTON_SPACE = 4
     JOY_BUTTON_BACKSPACE = 5
-    JOY_BUTTON_SHIFT = 6
-    JOY_BUTTON_EXTENDED = 7
+    JOY_SHIFT = {'type': 'button', 'value': 6}
+    JOY_EXTENDED = {'type': 'button', 'value': 7}
     JOY_BUTTON_TAB = 10
     JOY_BUTTON_RETURN = 11
     JOY_BUTTON_CAPS_LOCK = 8
@@ -138,14 +138,16 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.press('backspace')
 
-        elif event.button == self.JOY_BUTTON_SHIFT:
+        elif (self.JOY_SHIFT.get('type') == 'button' and
+                event.button == self.JOY_SHIFT['value']):
             self.shift = True
             keyboard.press('shift')
 
             if self.on_state_changed is not None:
                 self.on_state_changed(self)
 
-        elif event.button == self.JOY_BUTTON_EXTENDED:
+        elif (self.JOY_EXTENDED.get('type') == 'button' and
+                event.button == self.JOY_EXTENDED['value']):
             self.extended = True
 
             if self.on_state_changed is not None:
@@ -183,14 +185,16 @@ class KeyboardControllerEventHandler(object):
         if event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.release('backspace')
 
-        elif event.button == self.JOY_BUTTON_SHIFT:
+        elif (self.JOY_SHIFT.get('type') == 'button' and
+                event.button == self.JOY_SHIFT['value']):
             self.shift = False
             keyboard.release('shift')
 
             if self.on_state_changed is not None:
                 self.on_state_changed(self)
 
-        elif event.button == self.JOY_BUTTON_EXTENDED:
+        elif (self.JOY_EXTENDED.get('type') == 'button' and
+                event.button == self.JOY_EXTENDED['value']):
             self.extended = False
 
             if self.on_state_changed is not None:
@@ -254,6 +258,36 @@ class KeyboardControllerEventHandler(object):
                 self.last[left_right] = [0, 0]
                 self.current_key[left_right] = ""
                 if self.on_state_changed:
+                    self.on_state_changed(self)
+
+        elif (self.JOY_SHIFT.get('type') == 'axis' and
+                event.axis == self.JOY_SHIFT['value']):
+            if not self.shift and event.value > -0.85:
+                self.shift = True
+                keyboard.press('shift')
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+            elif self.shift and event.value < -0.95:
+                self.shift = False
+                keyboard.release('shift')
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+        elif (self.JOY_EXTENDED.get('type') == 'axis' and
+                event.axis == self.JOY_EXTENDED['value']):
+            if not self.extended and event.value > -0.85:
+                self.extended = True
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+            elif self.extended and event.value < -0.95:
+                self.extended = False
+
+                if self.on_state_changed is not None:
                     self.on_state_changed(self)
 
     def _hat_move_event(self, event):
