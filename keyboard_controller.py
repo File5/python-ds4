@@ -178,6 +178,22 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_ESC:
             keyboard.press('esc')
 
+        elif self.JOY_ARROWS.get('type') == 'buttons':
+            up = self.JOY_ARROWS['UP']
+            down = self.JOY_ARROWS['DOWN']
+            left = self.JOY_ARROWS['LEFT']
+            right = self.JOY_ARROWS['RIGHT']
+
+            if event.button in (up, down, left, right):
+                if event.button == up:
+                    keyboard.press('up')
+                elif event.button == down:
+                    keyboard.press('down')
+                elif event.button == left:
+                    keyboard.press('left')
+                elif event.button == right:
+                    keyboard.press('right')
+
     def _button_up_event(self, event):
         if event.button == self.JOY_BUTTON_SPACE:
             keyboard.release('space')
@@ -223,6 +239,22 @@ class KeyboardControllerEventHandler(object):
 
         elif event.button == self.JOY_BUTTON_ESC:
             keyboard.release('esc')
+
+        elif self.JOY_ARROWS.get('type') == 'buttons':
+            up = self.JOY_ARROWS['UP']
+            down = self.JOY_ARROWS['DOWN']
+            left = self.JOY_ARROWS['LEFT']
+            right = self.JOY_ARROWS['RIGHT']
+
+            if event.button in (up, down, left, right):
+                if event.button == up:
+                    keyboard.release('up')
+                elif event.button == down:
+                    keyboard.release('down')
+                elif event.button == left:
+                    keyboard.release('left')
+                elif event.button == right:
+                    keyboard.release('right')
 
     def _axis_move_event(self, event):
         if event.axis in self.JOY_AXIS_TO_LR:
@@ -291,6 +323,8 @@ class KeyboardControllerEventHandler(object):
                     self.on_state_changed(self)
 
     def _hat_move_event(self, event):
+        if not self.JOY_ARROWS.get('type') == 'hat': return
+
         indexes = self.JOY_ARROWS.get("indexes", (1, 0))
         if event.hat == 0:
             hat_axes = [

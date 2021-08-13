@@ -116,8 +116,8 @@ def main():
         }),
         ("keyboard", {
             pygame.JOYAXISMOTION: tuple(range(6)),
-            pygame.JOYBUTTONDOWN: tuple(range(14)),
-            pygame.JOYBUTTONUP: tuple(range(14)),
+            pygame.JOYBUTTONDOWN: tuple(range(16)),
+            pygame.JOYBUTTONUP: tuple(range(16)),
             pygame.JOYHATMOTION: (0, ),
         })
     ]))
