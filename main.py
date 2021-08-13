@@ -80,7 +80,8 @@ def create_ascii_dualshock(mode="mouse"):
         LONGSH='CapsLock',
         LAU=lau, LAM=lam, LAD=lad,
         RAU=rau, RAM=ram, RAD=rad,
-        LP='->|', RP='|⏎|'
+        LP='->|', RP='|⏎|',
+        DU='↑', DD='↓', DL='←', DR='→',
     )
     return ds4
 
