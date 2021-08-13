@@ -31,7 +31,7 @@ class AsciiKeyboard:
     BACKSPACE_KEY = SpecialKey('<-', '<Backspace>', 5)
     TAB_KEY = SpecialKey('->|', '<Tab>', 3)
     RETURN_UPPER_KEY = SpecialKey('', '< >', 3)
-    RETURN_KEY = SpecialKey('⏎', '<Return>', 6, custom_upper_border='--      ')
+    RETURN_KEY = SpecialKey('Enter', '<Return>', 6, custom_upper_border='--      ')
     CAPS_LOCK_KEY = SpecialKey('Caps', '<CapsLock>', 4)
     LSHIFT_KEY = SpecialKey('^    ', '<Shift>', 5)
     RSHIFT_KEY = SpecialKey('        ^', '<Shift>', 9)
