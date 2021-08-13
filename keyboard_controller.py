@@ -5,11 +5,20 @@
 #
 # Distributed under terms of the MIT license.
 
+import platform
 import pygame
 import keyboard
 import numpy as np
 
 from controller import Controller as JoystickController
+
+
+if platform.system() == 'Darwin':
+    CONTROL = 59
+    OPTION = 58
+else:
+    CONTROL = 'ctrl'
+    OPTION = 'alt'
 
 
 class KeyboardControllerEventHandler(object):
@@ -170,10 +179,10 @@ class KeyboardControllerEventHandler(object):
             keyboard.press('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.press(58)
+            keyboard.press(OPTION)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.press(59)
+            keyboard.press(CONTROL)
 
         elif event.button == self.JOY_BUTTON_ESC:
             keyboard.press('esc')
@@ -232,10 +241,10 @@ class KeyboardControllerEventHandler(object):
             keyboard.release('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.release(58)
+            keyboard.release(OPTION)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.release(59)
+            keyboard.release(CONTROL)
 
         elif event.button == self.JOY_BUTTON_ESC:
             keyboard.release('esc')
