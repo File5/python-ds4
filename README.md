@@ -18,64 +18,64 @@ The script prints key mapping so it's easy to understand the principle.
 
 ```
              ,---,                                           ,---,
-             |SCR|                                           |SCR|
-             |OLL|                                           |OLL|
+             |   |                                           |SCR|
+             | ^ |                                           |OLL|
              '---'                                           '---'
            ,-----,                                           ,-----,
-           | LMB |                                           | RMB |
+           | LMB |  CapsLock                                 | RMB |
         ,--'-----'--------,-------------------------,--------'-----'--,
        /    ,---,     ,--,|                         |,--,     ,---,    \
-      /     |   |     |  ||      [  Mouse   ]       ||  |    (Ctrl )    \
+      /     | ↑ |     |  ||      [  Mouse   ]       ||  |    (Ctrl )    \
      / ,---. \ / .---,'--'|        Keyboard         |'--',---,'---',---, \
-    |  |    >   <    |    |                         |   ( Cmd )   ( Opt ) |
+    |  | ←  >   <  → |    |                         |   ( Cmd )   ( Opt ) |
     |  '---` / \ `---'    '-------------------------'    '---',---,'---'  |
-    |       |   |       .-"""-.      ,---,      .-"""-.      (     )      |
+    |       | ↓ |       .-"""-.      ,---,      .-"""-.      ( Esc )      |
     |       '---'      /       \    (     )    /       \      '---'       |
    /                  (  Slow   )    '---'    (  Fast   )                  \
   /                  ,-\       /---------------\       /-,                  \
  /                  /   '-...-'                 '-...-'   \                  \
 |                  /                                       \                  |
-|                 /       | |                     |⏎|       \                 |
+|                 /       ->|                     |⏎|       \                 |
  \               |                                           |               /
   \             /                                             \             /
    '---_____---'                                               '---_____---'
 
              ,---,                                           ,---,
-             |   |                                           |   |
-             | ^ |                                           | ^ |
+             |   |                                           | 1 |
+             | ^ |                                           | ] |
              '---'                                           '---'
            ,-----,                                           ,-----,
-           |Space|                                           |  <- |
+           |Space|  CapsLock                                 |  <- |
         ,--'-----'--------,-------------------------,--------'-----'--,
        /    ,---,     ,--,|                         |,--,     ,---,    \
-      /     |   |     |  ||         Mouse           ||  |    (Ctrl )    \
+      /     | ↑ |     |  ||         Mouse           ||  |    (Ctrl )    \
      / ,---. \ / .---,'--'|      [ Keyboard ]       |'--',---,'---',---, \
-    |  |    >   <    |    |                         |   ( Cmd )   ( Opt ) |
+    |  | ←  >   <  → |    |                         |   ( Cmd )   ( Opt ) |
     |  '---` / \ `---'    '-------------------------'    '---',---,'---'  |
-    |       |   |       .-"""-.      ,---,      .-"""-.      (     )      |
+    |       | ↓ |       .-"""-.      ,---,      .-"""-.      ( Esc )      |
     |       '---'      / qwert \    (     )    / yuiop \      '---'       |
    /                  (  asdfg  )    '---'    (  hjkl;  )                  \
   /                  ,-\ zxcvb /---------------\ nm,./ /-,                  \
  /                  /   '-...-'                 '-...-'   \                  \
 |                  /                                       \                  |
-|                 /       | |                     |⏎|       \                 |
+|                 /       ->|                     |⏎|       \                 |
  \               |                                           |               /
   \             /                                             \             /
    '---_____---'                                               '---_____---'
 
              ,---,                                           ,---,
-             |   |                                           |   |
-             | ^ |                                           | ^ |
+             |   |                                           | 1 |
+             | ^ |                                           | ] |
              '---'                                           '---'
            ,-----,                                           ,-----,
-           |Space|                                           |  <- |
+           |Space|  CapsLock                                 |  <- |
         ,--'-----'--------,-------------------------,--------'-----'--,
        /    ,---,     ,--,|                         |,--,     ,---,    \
-      /     |   |     |  ||         Mouse           ||  |    (Ctrl )    \
+      /     | ↑ |     |  ||         Mouse           ||  |    (Ctrl )    \
      / ,---. \ / .---,'--'|      [ Keyboard ]       |'--',---,'---',---, \
-    |  |    >   <    |    |                         |   ( Cmd )   ( Opt ) |
+    |  | ←  >   <  → |    |                         |   ( Cmd )   ( Opt ) |
 ,---,---,---,---,---,---,---,---,---,---,---,---,---,-------,',---,'---'  |
-| § | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 | - | = |  <-   |(     )      |
+| § | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 | - | = |  <-   |( Esc )      |
 '---'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-----| '---'       |
 | ->| | q | w | e | r | t | y | u | i | o | p | [ | ] |     |              \
 '-----',--',--',--',--',--',--',--',--',--',--',--',--'     |               \
@@ -121,14 +121,29 @@ This will select the key but the keystroke is not done yet.
 You can move left and right sticks independently and whatever stick returned to the
 resting position first will register a keystroke first.
 
-## Support
+Numbers and special characters are available when holding the extended key (R2).
+This way, almost all keys from the English MacBook keyboard are available (except
+for `fn`, `F1` - `F12` / Media keys)
 
-Numbers and `[` (`{`), `]` (`}`), `'` (`"`) keys are not implemented yet.
+## Dependencies
+
+Note that this project depend on my fork of [boppreh/keyboard](https://github.com/boppreh/keyboard)
+since there is a bug in the original repo, so I've made a simple fix. If my pull request in the
+original repo is merged ([this issue](https://github.com/boppreh/keyboard/issues/471)) you can
+use original [boppreh/keyboard](https://github.com/boppreh/keyboard) repo. And later, when this commit
+gets released you can use [PyPI version](https://pypi.org/project/keyboard/) of the library.
+
+This project also depends on the [boppreh/mouse](https://github.com/boppreh/mouse) library where
+the support for macOS is in the master branch but not yet in the
+[release on PyPI](https://pypi.org/project/mouse/). I'm using experimental features of the library,
+so it's still a subject to change.
+
+## Support
 
 | Platform | Support                                                      |
 |----------|--------------------------------------------------------------|
 | macOS    | All features                                                 |
-| Windows  | Issues with L2, R2 triggers, issues with Ctrl, Alt, Win keys |
+| Windows  | All features                                                 |
 | Linux    | Untested                                                     |
 
 ## How to use

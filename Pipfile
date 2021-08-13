@@ -9,8 +9,9 @@ pytest = "*"
 [packages]
 numpy = "*"
 pygame = ">=2.0.0"
-keyboard = "*"
-pynput = "*"
+pyobjc = {version = "*", markers = "sys_platform=='darwin'"}
+mouse = {editable = true, git = "https://github.com/boppreh/mouse"}
+keyboard = {editable = true, ref = "fix-macos-holdkey", git = "https://github.com/File5/keyboard"}
 
 [requires]
 python_version = "3.9"

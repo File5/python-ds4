@@ -4,6 +4,13 @@
 # Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
 #
 # Distributed under terms of the MIT license.
+import platform
+
+if platform.system() == 'Windows':
+    RETURN_TEXT = 'Enter'
+else:
+    RETURN_TEXT = '⏎'
+
 
 class SpecialKey:
     def __init__(self, text, name, width, custom_upper_border=None):
@@ -13,11 +20,25 @@ class SpecialKey:
         self.custom_upper_border = custom_upper_border
 
 
+class UpdatingSpecialKey(SpecialKey):
+    def __init__(self, text_func, name, width, custom_upper_border=None):
+        super().__init__('', name, width, custom_upper_border)
+        self.text_func = text_func
+
+    @property
+    def text(self):
+        return self.text_func()
+
+    @text.setter
+    def text(self, _):
+        pass  # silently ignore
+
+
 class AsciiKeyboard:
     BACKSPACE_KEY = SpecialKey('<-', '<Backspace>', 5)
     TAB_KEY = SpecialKey('->|', '<Tab>', 3)
     RETURN_UPPER_KEY = SpecialKey('', '< >', 3)
-    RETURN_KEY = SpecialKey('⏎', '<Return>', 6, custom_upper_border='--      ')
+    RETURN_KEY = SpecialKey(RETURN_TEXT, '<Return>', 6, custom_upper_border='--      ')
     CAPS_LOCK_KEY = SpecialKey('Caps', '<CapsLock>', 4)
     LSHIFT_KEY = SpecialKey('^    ', '<Shift>', 5)
     RSHIFT_KEY = SpecialKey('        ^', '<Shift>', 9)
@@ -33,6 +54,9 @@ class AsciiKeyboard:
     def __init__(self):
         self.highlight = {}
         self.shift = False
+        self.caps_lock = False
+        self.extended = False
+        self.CAPS_LOCK_KEY = UpdatingSpecialKey(lambda: 'CAPS' if self.caps_lock else 'Caps', '<CapsLock>', 4)
         self._keys = [
             ['§'] + [str(i) for i in range(1, 10)] + ['0', '-', '=', self.BACKSPACE_KEY],
             [self.TAB_KEY, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', self.RETURN_UPPER_KEY],
@@ -40,8 +64,18 @@ class AsciiKeyboard:
             [self.LSHIFT_KEY, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', self.RSHIFT_KEY],
             [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
         ]
+        self._extended_keys = [
+            [' '] + [' ' for i in range(1, 10)] + [' ', ' ', ' ', self.BACKSPACE_KEY],
+            [self.TAB_KEY, ' ', '1', '2', '3', ' ', ' ', '0', '-', '=', ' ', ' ', ' ', self.RETURN_UPPER_KEY],
+            [self.CAPS_LOCK_KEY, ' ', '4', '5', '6', ' ', ' ', '[', '\'', ']', ' ', ' ', self.RETURN_KEY],
+            [self.LSHIFT_KEY, ' ', '7', '8', '9', ' ', ' ', '§', '`', '\\', ' ', self.RSHIFT_KEY],
+            [self.CTRL_KEY, self.OPTION_KEY, self.CMD_KEY, self.SPACE_KEY, self.CMD_KEY, self.OPTION_KEY]
+        ]
         self._shift = {
-            '[': '{', ']': '}', ';': ':', '\'': '"', ',': '<', '.': '>', '/': '?'
+            '[': '{', ']': '}', ';': ':', '\'': '"', ',': '<', '.': '>', '/': '?',
+            '1': '!', '2': '@', '3': '#', '4': '$', '5': '%', '6': '^', '7': '&', '8': '*', '9': '(', '0': ')',
+            '-': '_', '=': '+',
+            '§': '±', '`': '~', '\\': '|',
         }
 
     def __str__(self):
@@ -102,7 +136,7 @@ class AsciiKeyboard:
                     text = key.text
                 else:
                     width = 1
-                    if self.shift and (key.isalpha() or key in self._shift):
+                    if (self.shift and (key.isalpha() or key in self._shift)) or self.caps_lock and key.isalpha():
                         if key in self._shift:
                             text = self._shift[key]
                         else:
@@ -121,7 +155,8 @@ class AsciiKeyboard:
             result_rows.append(result_row)
         
         delim_indexes = set()
-        for i, row in enumerate(self._keys):
+        keys = self._extended_keys if self.extended else self._keys
+        for i, row in enumerate(keys):
             delim_indexes = upper_part(row, delim_indexes, first=i == 0)
             lower_part(row)
 

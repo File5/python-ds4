@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "505462a1d8573aa7e6ddf594c35b5b549bb067c2f0583f963b55bd28ff164210"
+            "sha256": "c07cface55b7ca13c9324231b2bab931479c8add733053f09d342a5da77a9c61"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -17,12 +17,14 @@
     },
     "default": {
         "keyboard": {
-            "hashes": [
-                "sha256:63ed83305955939ca5c9a73755e5cc43e8242263f5ad5fd3bb7e0b032f3d308b",
-                "sha256:8e9c2422f1217e0bd84489b9ecd361027cc78415828f4fe4f88dd4acd587947b"
-            ],
-            "index": "pypi",
-            "version": "==0.13.5"
+            "editable": true,
+            "git": "https://github.com/File5/keyboard",
+            "ref": "c5309f05357e013f77ba91f9e683386879963752"
+        },
+        "mouse": {
+            "editable": true,
+            "git": "https://github.com/boppreh/mouse",
+            "ref": "50384a4decd4dc94cb7449538b37c31b1d492f42"
         },
         "numpy": {
             "hashes": [
@@ -105,20 +107,12 @@
             "index": "pypi",
             "version": "==2.0.1"
         },
-        "pynput": {
-            "hashes": [
-                "sha256:4e50b1a0ab86847e87e58f6d1993688b9a44f9f4c88d4712315ea8eb552ef828",
-                "sha256:6626e8ea9ca482bb5628a7169e1193824e382c4ad3053e40f4f24f41ee7b41c9",
-                "sha256:fea5777454f896bd79d35393088cd29a089f3b2da166f0848a922b1d5a807d4f"
-            ],
-            "index": "pypi",
-            "version": "==1.7.3"
-        },
         "pyobjc": {
             "hashes": [
                 "sha256:322b07420f91b2dd7f624823e53046b922cab4aad28baab01a62463728b7e0c5",
                 "sha256:8a42710a73e6a7e4c332619aa3ea6d9981edadefafe4492f295c10fb7f14c4d2"
             ],
+            "index": "pypi",
             "markers": "sys_platform == 'darwin'",
             "version": "==7.3"
         },
@@ -1010,7 +1004,7 @@
                 "sha256:8ddbca6b466584c3dc0e5b701b1c2a9b5d97ddc1d79a949927499ebb1be1f210",
                 "sha256:98812844c34262def980bdf60923a875cd43428a8375b6fd53bd2cd800eccf0b"
             ],
-            "markers": "sys_platform == 'darwin'",
+            "markers": "python_version >= '3.6'",
             "version": "==7.3"
         },
         "pyobjc-framework-quicklookthumbnailing": {
@@ -1257,14 +1251,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==7.3"
-        },
-        "six": {
-            "hashes": [
-                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
-                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
-            ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==1.16.0"
         }
     },
     "develop": {

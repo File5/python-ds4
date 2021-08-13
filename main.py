@@ -5,6 +5,7 @@
 #
 # Distributed under terms of the MIT license.
 
+import platform
 import pygame
 
 from collections import OrderedDict
@@ -41,6 +42,10 @@ class JoyButtonSwitchEventHandler:
                 return value
         return None
 
+    @property
+    def current(self):
+        return self.values[self.switch_counter]
+
 
 def create_ascii_dualshock(mode="mouse"):
     tu = '  Mouse   '
@@ -51,8 +56,6 @@ def create_ascii_dualshock(mode="mouse"):
         lam = 'Slow'
         rau = rad = ''
         ram = 'Fast'
-        l2u = 'SCR'
-        l2d = 'OLL'
         r2u = 'SCR'
         r2d = 'OLL'
         l1 = 'LMB'
@@ -65,21 +68,31 @@ def create_ascii_dualshock(mode="mouse"):
         rau = 'yuiop'
         ram = 'hjkl;'
         rad = 'nm,./'
-        l2u = ''
-        l2d = '^'
-        r2u = ''
-        r2d = '^'
+        r2u = '1'
+        r2d = ']'
         l1 = 'Space'
         r1 = ' <-'
 
+    if platform.system() == 'Windows':
+        RETURN_TEXT = 'Enter'
+        du = dd = dl = dr = ''
+    else:
+        RETURN_TEXT = '|⏎|'
+        du = '↑'
+        dd = '↓'
+        dl = '←'
+        dr = '→'
+
     ds4 = AsciiDualShock()
     ds4.text = dict(
-        L2U=l2u, L2D=l2d, R2U=r2u, R2D=r2d, L1=l1, R1=r1,
-        RT='Ctrl', RS='Cmd', RC='Opt', RX='',
+        L2U='', L2D='^', R2U=r2u, R2D=r2d, L1=l1, R1=r1,
+        RT='Ctrl', RS='Cmd', RC='Opt', RX='Esc',
         TU=tu, TD=td,
+        LONGSH='CapsLock',
         LAU=lau, LAM=lam, LAD=lad,
         RAU=rau, RAM=ram, RAD=rad,
-        LP='| |', RP='|⏎|'
+        LP='->|', RP=RETURN_TEXT,
+        DU=du, DD=dd, DL=dl, DR=dr,
     )
     return ds4
 
@@ -99,12 +112,12 @@ def main():
         ("mouse", {
             pygame.JOYBUTTONDOWN: mouse.buttons_used,
             pygame.JOYBUTTONUP: mouse.buttons_used,
-            pygame.JOYAXISMOTION: tuple(range(6))
+            pygame.JOYAXISMOTION: mouse.axes_used
         }),
         ("keyboard", {
             pygame.JOYAXISMOTION: tuple(range(6)),
-            pygame.JOYBUTTONDOWN: tuple(range(14)),
-            pygame.JOYBUTTONUP: tuple(range(14)),
+            pygame.JOYBUTTONDOWN: tuple(range(16)),
+            pygame.JOYBUTTONUP: tuple(range(16)),
             pygame.JOYHATMOTION: (0, ),
         })
     ]))
@@ -114,25 +127,32 @@ def main():
     ascii_keyboard = AsciiKeyboard()
     ascii_keyboard.highlight = {"d": ('<', '>'), "k": ('<', '>')}
 
-    def on_current_key_changed(current_keys):
+    def on_state_changed(keyboard_controller):
+        current_keys = keyboard_controller.current_key
+        shift = keyboard_controller.shift
+        caps_lock = keyboard_controller.caps_lock
+        extended = keyboard_controller.extended
+
+        ascii_keyboard.shift = shift
+        ascii_keyboard.caps_lock = caps_lock
+        ascii_keyboard.extended = extended
+
         highlight = {}
         for left_right in current_keys:
             if current_keys[left_right] == "":
                 if left_right == "left":
-                    highlight["d"] = ('<', '>')
+                    default_highlight = "5" if ascii_keyboard.extended else "d"
+                    highlight[default_highlight] = ('<', '>')
                 else:
-                    highlight["k"] = ('<', '>')
+                    default_highlight = "'" if ascii_keyboard.extended else "k"
+                    highlight[default_highlight] = ('<', '>')
             else:
                 highlight[current_keys[left_right]] = ('[', ']')
         ascii_keyboard.highlight = highlight
-        print('\033[12F')
-        print(ascii_keyboard)
-    keyboard.on_current_key_changed = on_current_key_changed
-    def on_shift_changed(shift):
-        ascii_keyboard.shift = shift
-        print('\033[12F')
-        print(ascii_keyboard)
-    keyboard.on_shift_changed = on_shift_changed
+        if switch_handler.current == "keyboard":
+            print('\033[12F')
+            print(ascii_keyboard)
+    keyboard.on_state_changed = on_state_changed
 
     print(create_ascii_dualshock("mouse"))
 

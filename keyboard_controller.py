@@ -5,11 +5,20 @@
 #
 # Distributed under terms of the MIT license.
 
+import platform
 import pygame
 import keyboard
 import numpy as np
 
 from controller import Controller as JoystickController
+
+
+if platform.system() == 'Darwin':
+    CONTROL = 59
+    OPTION = 58
+else:
+    CONTROL = 'ctrl'
+    OPTION = 'alt'
 
 
 class KeyboardControllerEventHandler(object):
@@ -19,11 +28,16 @@ class KeyboardControllerEventHandler(object):
     JOY_AXIS = (0, 1, 2, 5)
     JOY_BUTTON_SPACE = 4
     JOY_BUTTON_BACKSPACE = 5
-    JOY_BUTTONS_SHIFT = (6, 7)
+    JOY_SHIFT = {'type': 'button', 'value': 6}
+    JOY_EXTENDED = {'type': 'button', 'value': 7}
+    JOY_BUTTON_TAB = 10
     JOY_BUTTON_RETURN = 11
+    JOY_BUTTON_CAPS_LOCK = 8
     JOY_BUTTON_CMD = 0
     JOY_BUTTON_OPTION = 2
     JOY_BUTTON_CTRL = 3
+    JOY_BUTTON_ESC = 1
+    JOY_ARROWS = {'type': 'hat', 'indexes': (1, 0)}
 
     LOOKUP = [
         [(1, 3), (0, 3), (1, 2), (0, 1), (1, 1), (2, 1), (1, 2), (2, 3)], # dist = 1
@@ -39,6 +53,18 @@ class KeyboardControllerEventHandler(object):
             "yuiop",
             "hjkl;",
             "nm,./",
+        ]
+    }
+    EXTENDED_KEYBOARD_LAYOUT = {
+        "left": [
+            "11233",
+            "44566",
+            "77899",
+        ],
+        "right": [
+            "00-==",
+            "[[']]",
+            "§§`\\\\",
         ]
     }
 
@@ -73,14 +99,15 @@ class KeyboardControllerEventHandler(object):
             "right": [0, 0],
         }
         self.shift = False
+        self.caps_lock = False
+        self.extended = False
 
-        self.keyboard_layout = self.DEFAULT_KEYBOARD_LAYOUT
         self.current_key = {
             "left": "",
             "right": "",
         }
-        self.on_current_key_changed = None
-        self.on_shift_changed = None
+        self.current_arrows = set()
+        self.on_state_changed = None
 
     @staticmethod
     def _get_angle(x, y):
@@ -98,6 +125,13 @@ class KeyboardControllerEventHandler(object):
         return 2 if np.linalg.norm(v, ord=4) > 0.9 else 1
         return 2 if np.all(np.abs(v) > 0.6) else 1
 
+    @property
+    def keyboard_layout(self):
+        if self.extended:
+            return self.EXTENDED_KEYBOARD_LAYOUT
+        else:
+            return self.DEFAULT_KEYBOARD_LAYOUT
+
     def _get_key(self, left_right, x, y):
         angle = self._get_angle(x, y)
         dist = self._get_dist(x, y)
@@ -113,22 +147,61 @@ class KeyboardControllerEventHandler(object):
         elif event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.press('backspace')
 
-        elif event.button in self.JOY_BUTTONS_SHIFT:
+        elif (self.JOY_SHIFT.get('type') == 'button' and
+                event.button == self.JOY_SHIFT['value']):
             self.shift = True
-            if self.on_shift_changed is not None:
-                self.on_shift_changed(True)
+            keyboard.press('shift')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
+        elif (self.JOY_EXTENDED.get('type') == 'button' and
+                event.button == self.JOY_EXTENDED['value']):
+            self.extended = True
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
+        elif event.button == self.JOY_BUTTON_TAB:
+            keyboard.press('tab')
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.press('return')
+
+        elif event.button == self.JOY_BUTTON_CAPS_LOCK:
+            self.caps_lock = not self.caps_lock
+            keyboard.press('caps lock')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_CMD:
             keyboard.press('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.press(58)
+            keyboard.press(OPTION)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.press(59)
+            keyboard.press(CONTROL)
+
+        elif event.button == self.JOY_BUTTON_ESC:
+            keyboard.press('esc')
+
+        elif self.JOY_ARROWS.get('type') == 'buttons':
+            up = self.JOY_ARROWS['UP']
+            down = self.JOY_ARROWS['DOWN']
+            left = self.JOY_ARROWS['LEFT']
+            right = self.JOY_ARROWS['RIGHT']
+
+            if event.button in (up, down, left, right):
+                if event.button == up:
+                    keyboard.press('up')
+                elif event.button == down:
+                    keyboard.press('down')
+                elif event.button == left:
+                    keyboard.press('left')
+                elif event.button == right:
+                    keyboard.press('right')
 
     def _button_up_event(self, event):
         if event.button == self.JOY_BUTTON_SPACE:
@@ -137,22 +210,60 @@ class KeyboardControllerEventHandler(object):
         if event.button == self.JOY_BUTTON_BACKSPACE:
             keyboard.release('backspace')
 
-        elif event.button in self.JOY_BUTTONS_SHIFT:
+        elif (self.JOY_SHIFT.get('type') == 'button' and
+                event.button == self.JOY_SHIFT['value']):
             self.shift = False
-            if self.on_shift_changed is not None:
-                self.on_shift_changed(False)
+            keyboard.release('shift')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
+        elif (self.JOY_EXTENDED.get('type') == 'button' and
+                event.button == self.JOY_EXTENDED['value']):
+            self.extended = False
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
+
+        elif event.button == self.JOY_BUTTON_TAB:
+            keyboard.release('tab')
 
         elif event.button == self.JOY_BUTTON_RETURN:
             keyboard.release('return')
+
+        elif event.button == self.JOY_BUTTON_CAPS_LOCK:
+            keyboard.release('caps lock')
+
+            if self.on_state_changed is not None:
+                self.on_state_changed(self)
 
         elif event.button == self.JOY_BUTTON_CMD:
             keyboard.release('command')
 
         elif event.button == self.JOY_BUTTON_OPTION:
-            keyboard.release(58)
+            keyboard.release(OPTION)
 
         elif event.button == self.JOY_BUTTON_CTRL:
-            keyboard.release(59)
+            keyboard.release(CONTROL)
+
+        elif event.button == self.JOY_BUTTON_ESC:
+            keyboard.release('esc')
+
+        elif self.JOY_ARROWS.get('type') == 'buttons':
+            up = self.JOY_ARROWS['UP']
+            down = self.JOY_ARROWS['DOWN']
+            left = self.JOY_ARROWS['LEFT']
+            right = self.JOY_ARROWS['RIGHT']
+
+            if event.button in (up, down, left, right):
+                if event.button == up:
+                    keyboard.release('up')
+                elif event.button == down:
+                    keyboard.release('down')
+                elif event.button == left:
+                    keyboard.release('left')
+                elif event.button == right:
+                    keyboard.release('right')
 
     def _axis_move_event(self, event):
         if event.axis in self.JOY_AXIS_TO_LR:
@@ -172,11 +283,11 @@ class KeyboardControllerEventHandler(object):
             key = self._get_key(left_right, x, y)
             if self.current_key[left_right] != key:
                 self.current_key[left_right] = key
-                if self.on_current_key_changed:
-                    self.on_current_key_changed(self.current_key)
+                if self.on_state_changed:
+                    self.on_state_changed(self)
 
             if all((abs(i) == 0 for i in self.axis[left_right])):
-                if self.shift:
+                if key.isalpha() and self.caps_lock:
                     key = "shift+" + key
                 # comma is the separator for multiple keystrokes in the keyboard library
                 if key == "shift+,":
@@ -187,11 +298,63 @@ class KeyboardControllerEventHandler(object):
                 # print(self.last[left_right])
                 self.last[left_right] = [0, 0]
                 self.current_key[left_right] = ""
-                if self.on_current_key_changed:
-                    self.on_current_key_changed(self.current_key)
+                if self.on_state_changed:
+                    self.on_state_changed(self)
+
+        elif (self.JOY_SHIFT.get('type') == 'axis' and
+                event.axis == self.JOY_SHIFT['value']):
+            if not self.shift and event.value > -0.85:
+                self.shift = True
+                keyboard.press('shift')
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+            elif self.shift and event.value < -0.95:
+                self.shift = False
+                keyboard.release('shift')
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+        elif (self.JOY_EXTENDED.get('type') == 'axis' and
+                event.axis == self.JOY_EXTENDED['value']):
+            if not self.extended and event.value > -0.85:
+                self.extended = True
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
+
+            elif self.extended and event.value < -0.95:
+                self.extended = False
+
+                if self.on_state_changed is not None:
+                    self.on_state_changed(self)
 
     def _hat_move_event(self, event):
-        pass
+        if not self.JOY_ARROWS.get('type') == 'hat': return
+
+        indexes = self.JOY_ARROWS.get("indexes", (1, 0))
+        if event.hat == 0:
+            hat_axes = [
+                (0, ("down", "up")),
+                (1, ("left", "right")),
+            ]
+            for i, directions in hat_axes:
+                lt0, gt0 = directions
+                if event.value[indexes[i]] < 0:
+                    self.current_arrows.add(lt0)
+                    keyboard.press(lt0)
+                elif event.value[indexes[i]] > 0:
+                    self.current_arrows.add(gt0)
+                    keyboard.press(gt0)
+                # else if 0 and self.current_arrows has our values
+                elif self.current_arrows.intersection({lt0, gt0}):
+                    if lt0 in self.current_arrows:
+                        keyboard.release(lt0)
+                    if gt0 in self.current_arrows:
+                        keyboard.release(gt0)
+                    self.current_arrows.difference_update({lt0, gt0})
 
     @property
     def handlers_dict(self):

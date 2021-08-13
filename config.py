@@ -9,7 +9,7 @@ RIGHT_AXIS = (2, 5)
 
 JOY_BUTTON_LEFT_MOUSE_CLICK = 4
 JOY_BUTTON_RIGHT_MOUSE_CLICK = 5
-JOY_BUTTONS_SCROLL_MODE = (6, 7)
+JOY_SCROLL_MODE = {'type': 'button', 'value': 7}
 
 # Keyboard
 
@@ -17,8 +17,13 @@ JOY_AXIS = (0, 1, 2, 5)
 
 JOY_BUTTON_SPACE = 4
 JOY_BUTTON_BACKSPACE = 5
-JOY_BUTTONS_SHIFT = (6, 7)
+JOY_SHIFT = {'type': 'button', 'value': 6}
+JOY_EXTENDED = {'type': 'button', 'value': 7}
+JOY_BUTTON_TAB = 10
 JOY_BUTTON_RETURN = 11
+JOY_BUTTON_CAPS_LOCK = 8
 JOY_BUTTON_CMD = 0
 JOY_BUTTON_OPTION = 2
 JOY_BUTTON_CTRL = 3
+JOY_BUTTON_ESC = 1
+JOY_ARROWS = {'type': 'hat', 'indexes': (1, 0)}
