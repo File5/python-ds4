@@ -123,7 +123,7 @@ resting position first will register a keystroke first.
 
 Numbers and special characters are available when holding the extended key (R2).
 This way, almost all keys from the English MacBook keyboard are available (except
-for `F1` - `F12` / Media keys)
+for `fn`, `F1` - `F12` / Media keys)
 
 ## Dependencies
 
@@ -143,7 +143,7 @@ so it's still a subject to change.
 | Platform | Support                                                      |
 |----------|--------------------------------------------------------------|
 | macOS    | All features                                                 |
-| Windows  | Issues with L2, R2 triggers, issues with Ctrl, Alt, Win keys |
+| Windows  | All features                                                 |
 | Linux    | Untested                                                     |
 
 ## How to use
