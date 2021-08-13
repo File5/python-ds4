@@ -4,6 +4,13 @@
 # Copyright (c) 2020 Aleksandr Zuev <zuev08@gmail.com>
 #
 # Distributed under terms of the MIT license.
+import platform
+
+if platform.system() == 'Windows':
+    RETURN_TEXT = 'Enter'
+else:
+    RETURN_TEXT = '⏎'
+
 
 class SpecialKey:
     def __init__(self, text, name, width, custom_upper_border=None):
@@ -31,7 +38,7 @@ class AsciiKeyboard:
     BACKSPACE_KEY = SpecialKey('<-', '<Backspace>', 5)
     TAB_KEY = SpecialKey('->|', '<Tab>', 3)
     RETURN_UPPER_KEY = SpecialKey('', '< >', 3)
-    RETURN_KEY = SpecialKey('Enter', '<Return>', 6, custom_upper_border='--      ')
+    RETURN_KEY = SpecialKey(RETURN_TEXT, '<Return>', 6, custom_upper_border='--      ')
     CAPS_LOCK_KEY = SpecialKey('Caps', '<CapsLock>', 4)
     LSHIFT_KEY = SpecialKey('^    ', '<Shift>', 5)
     RSHIFT_KEY = SpecialKey('        ^', '<Shift>', 9)

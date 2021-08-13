@@ -5,6 +5,7 @@
 #
 # Distributed under terms of the MIT license.
 
+import platform
 import pygame
 
 from collections import OrderedDict
@@ -72,6 +73,16 @@ def create_ascii_dualshock(mode="mouse"):
         l1 = 'Space'
         r1 = ' <-'
 
+    if platform.system() == 'Windows':
+        RETURN_TEXT = 'Enter'
+        du = dd = dl = dr = ''
+    else:
+        RETURN_TEXT = '|⏎|'
+        du = '↑'
+        dd = '↓'
+        dl = '←'
+        dr = '→'
+
     ds4 = AsciiDualShock()
     ds4.text = dict(
         L2U='', L2D='^', R2U=r2u, R2D=r2d, L1=l1, R1=r1,
@@ -80,8 +91,8 @@ def create_ascii_dualshock(mode="mouse"):
         LONGSH='CapsLock',
         LAU=lau, LAM=lam, LAD=lad,
         RAU=rau, RAM=ram, RAD=rad,
-        LP='->|', RP='Enter',
-        DU='', DD='', DL='', DR='',
+        LP='->|', RP=RETURN_TEXT,
+        DU=du, DD=dd, DL=dl, DR=dr,
     )
     return ds4
 
