@@ -23,7 +23,7 @@ class MouseControllerEventHandler:
 
     JOY_BUTTON_LEFT_MOUSE_CLICK = 4
     JOY_BUTTON_RIGHT_MOUSE_CLICK = 5
-    JOY_BUTTONS_SCROLL_MODE = (6, 7)
+    JOY_BUTTON_SCROLL_MODE = 7
 
     def __init__(self, left_axis_speed=None, right_axis_speed=None, axis_thr=None, config=None):
         """Initialize the event handler"""
@@ -55,7 +55,7 @@ class MouseControllerEventHandler:
         elif event.button == self.JOY_BUTTON_RIGHT_MOUSE_CLICK:
             mouse.press('right')
 
-        elif event.button in self.JOY_BUTTONS_SCROLL_MODE:
+        elif event.button == self.JOY_BUTTON_SCROLL_MODE:
             self.scroll_mode = True
 
     def _button_up_event(self, event):
@@ -65,7 +65,7 @@ class MouseControllerEventHandler:
         elif event.button == self.JOY_BUTTON_RIGHT_MOUSE_CLICK:
             mouse.release('right')
 
-        elif event.button in self.JOY_BUTTONS_SCROLL_MODE:
+        elif event.button == self.JOY_BUTTON_SCROLL_MODE:
             self.scroll_mode = False
 
     def _axis_move_event(self, event):
@@ -96,7 +96,7 @@ class MouseControllerEventHandler:
 
     @property
     def buttons_used(self):
-        return (self.JOY_BUTTON_LEFT_MOUSE_CLICK, self.JOY_BUTTON_RIGHT_MOUSE_CLICK) + self.JOY_BUTTONS_SCROLL_MODE
+        return (self.JOY_BUTTON_LEFT_MOUSE_CLICK, self.JOY_BUTTON_RIGHT_MOUSE_CLICK, self.JOY_BUTTON_SCROLL_MODE)
 
 
 if __name__ == "__main__":

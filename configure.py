@@ -148,7 +148,6 @@ def configure_left_right_axes(left_right):
 def configure_l2r2(config):
     c = Controller()
     def _handler(event):
-        config['JOY_BUTTONS_SCROLL_MODE'] = (event.button, )
         config['JOY_BUTTON_SHIFT'] = event.button
         c.running = False
 
@@ -161,7 +160,7 @@ def configure_l2r2(config):
     c.listen()
 
     def _handler(event):
-        config['JOY_BUTTONS_SCROLL_MODE'] += (event.button, )
+        config['JOY_BUTTON_SCROLL_MODE'] = event.button
         config['JOY_BUTTON_EXTENDED'] = event.button
         c.running = False
     c.event_handlers = {
@@ -249,7 +248,7 @@ CONFIGURE_SEQUENCE = OrderedDict([
     ('TU', ['JOY_BUTTON_SWITCH']),
     ('SH', ['JOY_BUTTON_CAPS_LOCK']),
     ('L1', ['JOY_BUTTON_LEFT_MOUSE_CLICK', 'JOY_BUTTON_SPACE']),
-    #('L2D', ['JOY_BUTTONS_SCROLL_MODE', 'JOY_BUTTON_SHIFT']),
+    #('L2D', ['JOY_BUTTON_SCROLL_MODE', 'JOY_BUTTON_SHIFT']),
     ('R1', ['JOY_BUTTON_RIGHT_MOUSE_CLICK', 'JOY_BUTTON_BACKSPACE']),
     #('R2D', ['JOY_BUTTON_EXTENDED']),
     ('L2R2', configure_l2r2),
@@ -277,7 +276,7 @@ if __name__ == "__main__":
 
         ('JOY_BUTTON_LEFT_MOUSE_CLICK', 4),
         ('JOY_BUTTON_RIGHT_MOUSE_CLICK', 5),
-        ('JOY_BUTTONS_SCROLL_MODE', (6, 7)),
+        ('JOY_BUTTON_SCROLL_MODE', 7),
 
         ('!print keyboard header', "\n# Keyboard\n\n"),
 

@@ -41,6 +41,10 @@ class JoyButtonSwitchEventHandler:
                 return value
         return None
 
+    @property
+    def current(self):
+        return self.values[self.switch_counter]
+
 
 def create_ascii_dualshock(mode="mouse"):
     tu = '  Mouse   '
@@ -51,8 +55,6 @@ def create_ascii_dualshock(mode="mouse"):
         lam = 'Slow'
         rau = rad = ''
         ram = 'Fast'
-        l2u = 'SCR'
-        l2d = 'OLL'
         r2u = 'SCR'
         r2d = 'OLL'
         l1 = 'LMB'
@@ -65,8 +67,6 @@ def create_ascii_dualshock(mode="mouse"):
         rau = 'yuiop'
         ram = 'hjkl;'
         rad = 'nm,./'
-        l2u = ''
-        l2d = '^'
         r2u = '1'
         r2d = ']'
         l1 = 'Space'
@@ -74,7 +74,7 @@ def create_ascii_dualshock(mode="mouse"):
 
     ds4 = AsciiDualShock()
     ds4.text = dict(
-        L2U=l2u, L2D=l2d, R2U=r2u, R2D=r2d, L1=l1, R1=r1,
+        L2U='', L2D='^', R2U=r2u, R2D=r2d, L1=l1, R1=r1,
         RT='Ctrl', RS='Cmd', RC='Opt', RX='Esc',
         TU=tu, TD=td,
         LONGSH='CapsLock',
@@ -138,8 +138,9 @@ def main():
             else:
                 highlight[current_keys[left_right]] = ('[', ']')
         ascii_keyboard.highlight = highlight
-        print('\033[12F')
-        print(ascii_keyboard)
+        if switch_handler.current == "keyboard":
+            print('\033[12F')
+            print(ascii_keyboard)
     keyboard.on_state_changed = on_state_changed
 
     print(create_ascii_dualshock("mouse"))
